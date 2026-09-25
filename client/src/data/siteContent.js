@@ -10,7 +10,7 @@ export const siteContent = {
     navigation: {
       home: "Inicio",
       branches: "Sucursales",
-      specialties: "Especialidades",
+      specialties: "Estudios",
       promotions: "Promociones",
       results: "Resultados",
       login: "Iniciar sesión",
@@ -297,7 +297,7 @@ export const siteContent = {
     navigation: {
       home: "Home",
       branches: "Locations",
-      specialties: "Specialties",
+      specialties: "Studies",
       promotions: "Promotions",
       results: "Results",
       login: "Sign in",

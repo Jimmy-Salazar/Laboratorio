@@ -10,7 +10,13 @@ import { AdminAuthProvider } from "./context/AdminAuthContext";
 import { RequireAdmin, RequireRole } from "./components/admin/RequireAdmin";
 import AdminHomeRedirect from "./components/admin/AdminHomeRedirect";
 import MasterAdminsPage from "./pages/MasterAdminsPage";
+import AdminUsersPage from "./pages/AdminUsersPage";
+import AdminStudiesPage from "./pages/AdminStudiesPage";
+import AdminBranchesPage from "./pages/AdminBranchesPage";
 
+import AdminAuditLogPage from "./pages/AdminAuditLogPage";
+import AdminPatientsPage from "./pages/AdminPatientsPage";
+import AdminResultsUploadPage from "./pages/AdminResultsUploadPage";
 /*
  * MAPA DE RUTAS DEL FRONTEND
  * ---------------------------------------------------------------------------
@@ -58,7 +64,7 @@ export default function App() {
           path="dashboard"
           element={
             <RequireRole
-              roles={["admin"]}
+              roles={["admin", "secretary", "laboratorist"]}
             >
               <AdminDashboardPage />
             </RequireRole>
@@ -75,7 +81,77 @@ export default function App() {
             </RequireRole>
           }
         />
-      </Route>
+        <Route
+          path="usuarios"
+          element={
+            <RequireRole
+              roles={["admin"]}
+            >
+              <AdminUsersPage />
+            </RequireRole>
+          }
+        />
+
+      
+        <Route
+          path="estudios"
+          element={
+            <RequireRole roles={["admin"]}>
+              <AdminStudiesPage />
+            </RequireRole>
+          }
+        />
+
+        <Route
+          path="sucursales"
+          element={
+            <RequireRole roles={["admin"]}>
+              <AdminBranchesPage />
+            </RequireRole>
+          }
+        />
+
+        <Route
+          path="actividad"
+          element={
+            <RequireRole
+              roles={["admin"]}
+            >
+              <AdminAuditLogPage />
+            </RequireRole>
+          }
+        />
+
+        <Route
+          path="pacientes"
+          element={
+            <RequireRole
+              roles={[
+                "admin",
+                "secretary",
+                "laboratorist",
+              ]}
+            >
+              <AdminPatientsPage />
+            </RequireRole>
+          }
+        />
+
+        <Route
+          path="resultados"
+          element={
+            <RequireRole
+              roles={[
+                "admin",
+                "secretary",
+                "laboratorist",
+              ]}
+            >
+              <AdminResultsUploadPage />
+            </RequireRole>
+          }
+        />
+</Route>
     </Routes>
   );
 }

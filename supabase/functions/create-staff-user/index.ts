@@ -7,17 +7,26 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
+const allowedRoles = new Set([
+  "admin",
+  "secretary",
+  "laboratorist",
+]);
+
 function json(
   body: Record<string, unknown>,
   status = 200,
 ) {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: {
-      ...corsHeaders,
-      "Content-Type": "application/json",
+  return new Response(
+    JSON.stringify(body),
+    {
+      status,
+      headers: {
+        ...corsHeaders,
+        "Content-Type": "application/json",
+      },
     },
-  });
+  );
 }
 
 Deno.serve(async (req) => {
@@ -123,8 +132,10 @@ Deno.serve(async (req) => {
 
   if (
     profileError ||
-    callerProfile?.role !== "master" ||
-    callerProfile?.active !== true
+    !callerProfile?.active ||
+    !["master", "admin"].includes(
+      callerProfile.role,
+    )
   ) {
     return json(
       {
@@ -138,6 +149,7 @@ Deno.serve(async (req) => {
   let body: {
     fullName?: string;
     identificationNumber?: string;
+    role?: string;
     password?: string;
   };
 
@@ -161,6 +173,9 @@ Deno.serve(async (req) => {
       body.identificationNumber ?? "",
     ).replace(/\D/g, "");
 
+  const role =
+    String(body.role ?? "").trim();
+
   const password =
     String(body.password ?? "");
 
@@ -169,20 +184,18 @@ Deno.serve(async (req) => {
     !/^\d{8,15}$/.test(
       identificationNumber,
     ) ||
+    !allowedRoles.has(role) ||
     password.length < 8
   ) {
     return json(
       {
         ok: false,
         message:
-          "Datos del administrador incompletos o invalidos.",
+          "Datos del usuario incompletos o invalidos.",
       },
       400,
     );
   }
-
-  const email =
-    `${identificationNumber}@admin.drchasi.local`;
 
   const {
     data: existingProfile,
@@ -206,6 +219,9 @@ Deno.serve(async (req) => {
     );
   }
 
+  const email =
+    `${identificationNumber}@admin.drchasi.local`;
+
   const {
     data: created,
     error: createError,
@@ -216,7 +232,7 @@ Deno.serve(async (req) => {
     user_metadata: {
       identification_number:
         identificationNumber,
-      role: "admin",
+      role,
     },
   });
 
@@ -238,7 +254,7 @@ Deno.serve(async (req) => {
     .insert({
       user_id: created.user.id,
       full_name: fullName,
-      role: "admin",
+      role,
       active: true,
       identification_number:
         identificationNumber,
@@ -253,7 +269,7 @@ Deno.serve(async (req) => {
       {
         ok: false,
         message:
-          "No fue posible crear el perfil administrativo.",
+          "No fue posible crear el perfil del usuario.",
       },
       500,
     );
@@ -270,7 +286,7 @@ Deno.serve(async (req) => {
       p_entity_type: "staff_profiles",
       p_entity_id: created.user.id,
       p_description:
-        "Creo el administrador: " + fullName,
+        "Creo el usuario: " + fullName,
       p_changed_fields: [],
     },
   );
@@ -283,11 +299,11 @@ Deno.serve(async (req) => {
   }
   return json({
     ok: true,
-    admin: {
+    user: {
       userId: created.user.id,
       fullName,
       identificationNumber,
-      role: "admin",
+      role,
       active: true,
     },
   });

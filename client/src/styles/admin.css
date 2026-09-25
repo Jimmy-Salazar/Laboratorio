@@ -1238,3 +1238,3722 @@
     width: max-content;
   }
 }
+
+/* ==========================================================================
+   PATCH 06.3 - ADMIN LOGOUT BUTTON
+   ========================================================================== */
+
+.admin-sidebar__footer .admin-nav__button {
+  width: 100%;
+  min-height: 46px;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 11px;
+
+  padding: 0 12px;
+
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 10px;
+
+  color: #ffffff;
+  background:
+    linear-gradient(
+      135deg,
+      #0d67d8,
+      #0a55b8
+    );
+
+  box-shadow:
+    0 7px 18px
+    rgba(0, 20, 55, 0.16);
+
+  font: inherit;
+  font-size: 13px;
+  font-weight: 750;
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 120ms ease;
+}
+
+.admin-sidebar__footer .admin-nav__button svg {
+  flex: 0 0 auto;
+}
+
+.admin-sidebar__footer .admin-nav__button span {
+  min-width: 0;
+}
+
+.admin-sidebar__footer .admin-nav__button:focus-visible {
+  outline: 3px solid rgba(143, 199, 255, 0.72);
+  outline-offset: 2px;
+
+  border-color: rgba(255, 255, 255, 0.48);
+}
+
+.admin-sidebar__footer .admin-nav__button:active {
+  transform: translateY(1px);
+
+  background:
+    linear-gradient(
+      135deg,
+      #0954b5,
+      #08499d
+    );
+
+  box-shadow:
+    0 4px 11px
+    rgba(0, 20, 55, 0.14);
+}
+
+.admin-sidebar__footer .admin-nav__button:disabled {
+  opacity: 0.58;
+
+  color: rgba(255, 255, 255, 0.82);
+  background: #315f91;
+
+  box-shadow: none;
+
+  cursor: wait;
+  transform: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .admin-sidebar__footer .admin-nav__button:not(:disabled):hover {
+    border-color: rgba(255, 255, 255, 0.42);
+
+    color: #ffffff;
+    background:
+      linear-gradient(
+        135deg,
+        #1979eb,
+        #0d63d3
+      );
+
+    box-shadow:
+      0 9px 22px
+      rgba(7, 65, 134, 0.34);
+
+    transform: translateY(-1px);
+  }
+}
+
+@media (max-width: 820px) {
+  .admin-sidebar__footer .admin-nav__button {
+    min-height: 48px;
+    border-radius: 11px;
+  }
+}
+
+@media (max-width: 420px) {
+  .admin-sidebar__footer .admin-nav__button {
+    min-height: 50px;
+
+    padding-inline: 14px;
+
+    font-size: 14px;
+  }
+}
+/* ==========================================================================
+   PATCH 06.4 - ADMIN USERS
+   ========================================================================== */
+
+.admin-user-stats {
+  display: grid;
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+  gap: 12px;
+
+  margin-bottom: 15px;
+}
+
+.admin-user-stats article {
+  min-width: 0;
+
+  display: grid;
+  gap: 3px;
+
+  padding: 15px 16px;
+
+  border: 1px solid #dfe8f1;
+  border-radius: 12px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 5px 18px
+    rgba(39, 77, 113, 0.05);
+}
+
+.admin-user-stats span {
+  color: #758ba1;
+
+  font-size: 10px;
+  font-weight: 750;
+  text-transform: uppercase;
+}
+
+.admin-user-stats strong {
+  color: #173f6b;
+
+  font-size: 23px;
+}
+
+.admin-users-grid {
+  display: grid;
+  grid-template-columns:
+    minmax(300px, 0.7fr)
+    minmax(0, 1.3fr);
+  gap: 15px;
+  align-items: start;
+}
+
+.admin-form-control select {
+  width: 100%;
+  min-width: 0;
+  min-height: 45px;
+
+  border: 0;
+  outline: 0;
+
+  color: #173e68;
+  background: transparent;
+
+  font: inherit;
+  font-size: 15px;
+
+  cursor: pointer;
+}
+
+.admin-staff-list {
+  display: grid;
+}
+
+.admin-staff-row {
+  min-width: 0;
+
+  display: grid;
+  grid-template-columns:
+    38px
+    minmax(0, 1fr)
+    minmax(100px, auto)
+    auto
+    auto;
+  gap: 10px;
+  align-items: center;
+
+  padding: 13px 16px;
+
+  border-bottom: 1px solid #edf2f7;
+}
+
+.admin-staff-row:last-child {
+  border-bottom: 0;
+}
+
+.admin-staff-row__identity {
+  min-width: 0;
+
+  display: grid;
+  gap: 2px;
+}
+
+.admin-staff-row__identity strong {
+  overflow-wrap: anywhere;
+
+  color: #264d73;
+
+  font-size: 12px;
+}
+
+.admin-staff-row__identity span {
+  color: #8195a8;
+
+  font-size: 10px;
+}
+
+.admin-role-pill {
+  width: max-content;
+  max-width: 100%;
+
+  padding: 6px 9px;
+
+  border-radius: 999px;
+
+  color: #245884;
+  background: #e8f3ff;
+
+  font-size: 10px;
+  font-weight: 750;
+}
+
+@media (max-width: 1120px) {
+  .admin-user-stats {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .admin-users-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .admin-staff-row {
+    grid-template-columns:
+      38px
+      minmax(0, 1fr)
+      auto;
+  }
+
+  .admin-staff-row .admin-role-pill {
+    grid-column: 2;
+  }
+
+  .admin-staff-row .admin-status-pill {
+    grid-column: 3;
+    grid-row: 1;
+  }
+
+  .admin-staff-row .admin-master-toggle {
+    grid-column: 2 / -1;
+
+    width: 100%;
+    min-height: 42px;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-user-stats {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .admin-user-stats article {
+    padding: 12px;
+  }
+
+  .admin-staff-row {
+    grid-template-columns:
+      36px
+      minmax(0, 1fr);
+  }
+
+  .admin-staff-row .admin-status-pill,
+  .admin-staff-row .admin-role-pill,
+  .admin-staff-row .admin-master-toggle {
+    grid-column: 2;
+  }
+
+  .admin-staff-row .admin-status-pill {
+    grid-row: auto;
+  }
+
+  .admin-role-pill,
+  .admin-status-pill {
+    min-height: 28px;
+
+    align-items: center;
+  }
+}
+/* ==========================================================================
+   PATCH 06.5 - CATALOG / BRANCHES / HOURS
+   ========================================================================== */
+
+.admin-catalog-grid {
+  display: grid;
+  grid-template-columns:
+    minmax(300px, 0.72fr)
+    minmax(0, 1.28fr);
+  gap: 15px;
+  align-items: start;
+}
+
+.admin-form-two-columns {
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.admin-create-form > label,
+.admin-branch-form > label,
+.admin-form-two-columns > label {
+  display: grid;
+  gap: 6px;
+}
+
+.admin-create-form > label > span,
+.admin-branch-form > label > span,
+.admin-form-two-columns > label > span {
+  color: #3c5e7f;
+
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.admin-textarea {
+  width: 100%;
+  min-height: 76px;
+
+  resize: vertical;
+
+  padding: 11px 12px;
+
+  border: 1px solid #cbd9e6;
+  border-radius: 9px;
+  outline: 0;
+
+  color: #173e68;
+  background: #ffffff;
+
+  font: inherit;
+  font-size: 14px;
+}
+
+.admin-textarea:focus {
+  border-color: #6ba9ee;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(27, 111, 210, 0.1);
+}
+
+.admin-form-switches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+
+  padding: 5px 0;
+}
+
+.admin-inline-check {
+  min-height: 36px;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  color: #395d80;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.admin-inline-check input {
+  width: 18px;
+  height: 18px;
+
+  accent-color: #0e66d7;
+}
+
+.admin-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 9px;
+
+  margin-top: 2px;
+}
+
+.admin-panel__header--wrap {
+  flex-wrap: wrap;
+}
+
+.admin-search-control {
+  min-width: min(230px, 100%);
+  min-height: 39px;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 0 10px;
+
+  border: 1px solid #d2dfeb;
+  border-radius: 9px;
+
+  color: #7189a0;
+  background: #ffffff;
+}
+
+.admin-search-control input {
+  width: 100%;
+  min-width: 0;
+  min-height: 37px;
+
+  border: 0;
+  outline: 0;
+
+  color: #244b71;
+  background: transparent;
+
+  font: inherit;
+  font-size: 12px;
+}
+
+.admin-search-control--full {
+  width: 100%;
+}
+
+.admin-study-list {
+  display: grid;
+}
+
+.admin-study-row {
+  min-width: 0;
+
+  display: grid;
+  grid-template-columns:
+    40px
+    minmax(160px, 1fr)
+    auto
+    auto
+    auto;
+  gap: 9px;
+  align-items: center;
+
+  padding: 12px 15px;
+
+  border-bottom: 1px solid #edf2f7;
+}
+
+.admin-study-row:last-child {
+  border-bottom: 0;
+}
+
+.admin-study-row__icon {
+  width: 38px;
+  height: 38px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 10px;
+
+  color: #0c67cf;
+  background: #eaf4ff;
+}
+
+.admin-study-row__main {
+  min-width: 0;
+
+  display: grid;
+  gap: 3px;
+}
+
+.admin-study-row__main strong {
+  overflow-wrap: anywhere;
+
+  color: #254d73;
+  font-size: 12px;
+}
+
+.admin-study-row__main span {
+  color: #8396a9;
+  font-size: 10px;
+}
+
+.admin-compact-toggle,
+.admin-row-edit {
+  min-height: 34px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+
+  padding: 0 9px;
+
+  border: 1px solid #d0deea;
+  border-radius: 8px;
+
+  font: inherit;
+  font-size: 10px;
+  font-weight: 750;
+
+  cursor: pointer;
+}
+
+.admin-compact-toggle.is-on {
+  border-color: #bfe3cf;
+
+  color: #17633f;
+  background: #edf9f2;
+}
+
+.admin-compact-toggle.is-off {
+  color: #6c7681;
+  background: #f2f4f6;
+}
+
+.admin-row-edit {
+  color: #295f91;
+  background: #ffffff;
+}
+
+/* --------------------------------------------------------------------------
+   BRANCH LAYOUT
+   -------------------------------------------------------------------------- */
+
+.admin-branches-layout {
+  display: grid;
+  grid-template-columns:
+    minmax(260px, 0.55fr)
+    minmax(0, 1.45fr);
+  gap: 15px;
+  align-items: start;
+}
+
+.admin-branch-list-panel {
+  position: sticky;
+  top: 84px;
+}
+
+.admin-panel__header--stack {
+  align-items: stretch;
+  flex-direction: column;
+}
+
+.admin-branch-list {
+  display: grid;
+
+  max-height: calc(100vh - 255px);
+
+  overflow-y: auto;
+}
+
+.admin-branch-card {
+  width: 100%;
+  min-width: 0;
+
+  display: grid;
+  grid-template-columns:
+    38px
+    minmax(0, 1fr)
+    auto;
+  gap: 9px;
+  align-items: center;
+
+  padding: 13px 14px;
+
+  border: 0;
+  border-bottom: 1px solid #edf2f7;
+
+  color: inherit;
+  background: #ffffff;
+
+  font: inherit;
+  text-align: left;
+
+  cursor: pointer;
+}
+
+.admin-branch-card.is-selected {
+  background: #f0f7ff;
+
+  box-shadow:
+    inset 3px 0 0 #0e68d8;
+}
+
+.admin-branch-card__icon {
+  width: 36px;
+  height: 36px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 9px;
+
+  color: #0d66d1;
+  background: #eaf4ff;
+}
+
+.admin-branch-card__copy {
+  min-width: 0;
+
+  display: grid;
+  gap: 2px;
+}
+
+.admin-branch-card__copy strong {
+  overflow-wrap: anywhere;
+
+  color: #234c73;
+
+  font-size: 12px;
+}
+
+.admin-branch-card__copy small {
+  overflow-wrap: anywhere;
+
+  color: #8496a8;
+
+  font-size: 9px;
+}
+
+.admin-branch-card__status {
+  padding: 5px 7px;
+
+  border-radius: 999px;
+
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.admin-branch-card__status.is-open {
+  color: #17623e;
+  background: #e6f7ed;
+}
+
+.admin-branch-card__status.is-closed {
+  color: #6e7781;
+  background: #edf0f3;
+}
+
+.admin-branch-editor {
+  min-width: 0;
+}
+
+.admin-config-tabs {
+  display: flex;
+  gap: 7px;
+
+  margin-bottom: 12px;
+
+  overflow-x: auto;
+}
+
+.admin-config-tabs button {
+  min-height: 41px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+
+  padding: 0 14px;
+
+  border: 1px solid #d6e2ed;
+  border-radius: 9px;
+
+  color: #54718e;
+  background: #ffffff;
+
+  font: inherit;
+  font-size: 11px;
+  font-weight: 750;
+
+  white-space: nowrap;
+
+  cursor: pointer;
+}
+
+.admin-config-tabs button.is-active {
+  border-color: #0e66d7;
+
+  color: #ffffff;
+  background: #0e66d7;
+}
+
+.admin-config-tabs button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.admin-branch-form {
+  display: grid;
+  gap: 13px;
+
+  padding: 18px;
+}
+
+.admin-branch-empty {
+  min-height: 260px;
+
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 7px;
+
+  color: #7890a7;
+
+  text-align: center;
+}
+
+.admin-branch-empty strong {
+  color: #315778;
+}
+
+/* --------------------------------------------------------------------------
+   STUDIES PER BRANCH
+   -------------------------------------------------------------------------- */
+
+.admin-branch-study-list {
+  display: grid;
+}
+
+.admin-branch-study-row {
+  min-width: 0;
+
+  display: grid;
+  grid-template-columns:
+    38px
+    minmax(0, 1fr)
+    auto;
+  gap: 10px;
+  align-items: center;
+
+  padding: 12px 15px;
+
+  border-bottom: 1px solid #edf2f7;
+}
+
+.admin-branch-study-row:last-child {
+  border-bottom: 0;
+}
+
+.admin-branch-study-row > div {
+  min-width: 0;
+
+  display: grid;
+  gap: 3px;
+}
+
+.admin-branch-study-row strong {
+  overflow-wrap: anywhere;
+
+  color: #274d72;
+
+  font-size: 12px;
+}
+
+.admin-branch-study-row small {
+  color: #8496a8;
+
+  font-size: 10px;
+}
+
+.admin-switch-button {
+  min-width: 125px;
+  min-height: 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+
+  padding: 0 10px;
+
+  border: 1px solid #d4dfe9;
+  border-radius: 9px;
+
+  color: #657b90;
+  background: #f5f7f9;
+
+  font: inherit;
+  font-size: 10px;
+
+  cursor: pointer;
+}
+
+.admin-switch-button__track {
+  position: relative;
+
+  width: 34px;
+  height: 19px;
+
+  flex: 0 0 34px;
+
+  border-radius: 999px;
+
+  background: #b9c5cf;
+
+  transition: background 150ms ease;
+}
+
+.admin-switch-button__track > span {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+
+  width: 13px;
+  height: 13px;
+
+  border-radius: 50%;
+
+  background: #ffffff;
+
+  transition: transform 150ms ease;
+}
+
+.admin-switch-button.is-on {
+  border-color: #b9dfca;
+
+  color: #17623e;
+  background: #edf9f2;
+}
+
+.admin-switch-button.is-on
+.admin-switch-button__track {
+  background: #1c9b61;
+}
+
+.admin-switch-button.is-on
+.admin-switch-button__track > span {
+  transform: translateX(15px);
+}
+
+.admin-switch-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* --------------------------------------------------------------------------
+   WEEKLY HOURS
+   -------------------------------------------------------------------------- */
+
+.admin-week-schedule {
+  display: grid;
+}
+
+.admin-day-schedule {
+  min-width: 0;
+
+  display: grid;
+  grid-template-columns:
+    115px
+    minmax(170px, 1fr)
+    minmax(280px, auto);
+  gap: 13px;
+  align-items: center;
+
+  padding: 13px 15px;
+
+  border-bottom: 1px solid #edf2f7;
+}
+
+.admin-day-schedule:last-child {
+  border-bottom: 0;
+}
+
+.admin-day-schedule__name {
+  display: grid;
+  gap: 2px;
+}
+
+.admin-day-schedule__name strong {
+  color: #274e74;
+  font-size: 12px;
+}
+
+.admin-day-schedule__name span {
+  color: #8899aa;
+  font-size: 9px;
+}
+
+.admin-day-schedule__blocks {
+  min-width: 0;
+
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.admin-time-block {
+  min-height: 34px;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  padding: 0 6px 0 9px;
+
+  border: 1px solid #cfe0ef;
+  border-radius: 8px;
+
+  color: #315c83;
+  background: #f3f8fd;
+
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.admin-time-block button {
+  width: 27px;
+  height: 27px;
+
+  display: grid;
+  place-items: center;
+
+  border: 0;
+  border-radius: 6px;
+
+  color: #9b4a4a;
+  background: transparent;
+
+  cursor: pointer;
+}
+
+.admin-day-schedule__add {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.admin-day-schedule__add input {
+  min-width: 0;
+  min-height: 38px;
+
+  padding: 0 7px;
+
+  border: 1px solid #cfdde9;
+  border-radius: 8px;
+
+  color: #2e567b;
+  background: #ffffff;
+
+  font: inherit;
+  font-size: 11px;
+}
+
+.admin-day-schedule__add > span {
+  color: #8698aa;
+  font-size: 10px;
+}
+
+.admin-add-time-button {
+  min-height: 38px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+
+  padding: 0 10px;
+
+  border: 1px solid #0e65d0;
+  border-radius: 8px;
+
+  color: #ffffff;
+  background: #0e66d7;
+
+  font: inherit;
+  font-size: 10px;
+  font-weight: 750;
+
+  cursor: pointer;
+}
+
+.admin-config-message {
+  margin-top: 12px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .admin-row-edit:hover,
+  .admin-compact-toggle:hover,
+  .admin-master-toggle:hover {
+    border-color: #7caee0;
+
+    background: #f2f8ff;
+  }
+
+  .admin-branch-card:hover {
+    background: #f7fbff;
+  }
+
+  .admin-config-tabs button:not(:disabled):not(.is-active):hover {
+    border-color: #8eb9e4;
+
+    color: #1f5e97;
+    background: #f4f9ff;
+  }
+
+  .admin-add-time-button:hover {
+    background: #1676e9;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   TABLET
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 1120px) {
+  .admin-catalog-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-branches-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-branch-list-panel {
+    position: static;
+  }
+
+  .admin-branch-list {
+    max-height: none;
+
+    display: grid;
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .admin-day-schedule {
+    grid-template-columns:
+      100px
+      minmax(0, 1fr);
+  }
+
+  .admin-day-schedule__add {
+    grid-column: 2;
+    justify-content: flex-start;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   MOBILE
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 720px) {
+  .admin-form-two-columns {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-study-row {
+    grid-template-columns:
+      38px
+      minmax(0, 1fr);
+  }
+
+  .admin-study-row
+  .admin-compact-toggle,
+  .admin-study-row
+  .admin-row-edit {
+    grid-column: 2;
+
+    width: 100%;
+    min-height: 40px;
+  }
+
+  .admin-branch-list {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-config-tabs {
+    width: 100%;
+  }
+
+  .admin-config-tabs button {
+    flex: 1 0 auto;
+  }
+
+  .admin-branch-study-row {
+    grid-template-columns:
+      38px
+      minmax(0, 1fr);
+  }
+
+  .admin-switch-button {
+    grid-column: 2;
+
+    width: 100%;
+    min-height: 44px;
+
+    justify-content: space-between;
+  }
+
+  .admin-day-schedule {
+    grid-template-columns: 1fr;
+    gap: 9px;
+  }
+
+  .admin-day-schedule__blocks,
+  .admin-day-schedule__add {
+    grid-column: 1;
+  }
+
+  .admin-day-schedule__add {
+    display: grid;
+    grid-template-columns:
+      minmax(0, 1fr)
+      auto
+      minmax(0, 1fr);
+  }
+
+  .admin-add-time-button {
+    grid-column: 1 / -1;
+
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 430px) {
+  .admin-form-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .admin-form-actions .admin-button {
+    width: 100%;
+    min-height: 46px;
+  }
+
+  .admin-page-heading__actions {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-branch-card {
+    grid-template-columns:
+      36px
+      minmax(0, 1fr);
+  }
+
+  .admin-branch-card__status {
+    grid-column: 2;
+    width: max-content;
+  }
+}
+/* ==========================================================================
+   PATCH 06.6 - CONFIGURATION SUBMENU
+   ========================================================================== */
+
+.admin-nav-group {
+  display: grid;
+  gap: 4px;
+}
+
+.admin-nav-group__trigger {
+  width: 100%;
+  min-height: 43px;
+
+  display: grid;
+  grid-template-columns:
+    19px
+    minmax(0, 1fr)
+    17px;
+  gap: 11px;
+  align-items: center;
+
+  padding: 0 12px;
+
+  border: 0;
+  border-radius: 9px;
+
+  color: #c7dbef;
+  background: transparent;
+
+  font: inherit;
+  font-size: 13px;
+  font-weight: 650;
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    color 150ms ease,
+    background 150ms ease;
+}
+
+.admin-nav-group__trigger > span {
+  min-width: 0;
+}
+
+.admin-nav-group__chevron {
+  transition:
+    transform 160ms ease;
+}
+
+.admin-nav-group.is-open
+.admin-nav-group__chevron {
+  transform: rotate(180deg);
+}
+
+.admin-nav-group.is-active
+.admin-nav-group__trigger {
+  color: #ffffff;
+  background:
+    rgba(65, 146, 236, 0.15);
+}
+
+.admin-nav-submenu {
+  display: grid;
+  gap: 3px;
+
+  margin: 1px 0 5px 18px;
+  padding-left: 11px;
+
+  border-left:
+    1px solid
+    rgba(154, 198, 239, 0.24);
+}
+
+.admin-nav__sublink {
+  min-height: 39px;
+
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  padding: 0 10px;
+
+  border-radius: 8px;
+
+  color: #aecae5;
+
+  font-size: 12px;
+  font-weight: 650;
+  text-decoration: none;
+
+  transition:
+    color 150ms ease,
+    background 150ms ease;
+}
+
+.admin-nav__sublink.is-active {
+  color: #ffffff;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(44, 128, 225, 0.39),
+      rgba(55, 139, 236, 0.16)
+    );
+}
+
+.admin-nav-group__trigger:focus-visible,
+.admin-nav__sublink:focus-visible {
+  outline:
+    2px solid
+    rgba(139, 197, 255, 0.8);
+  outline-offset: 2px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .admin-nav-group__trigger:hover,
+  .admin-nav__sublink:hover {
+    color: #ffffff;
+    background:
+      rgba(255, 255, 255, 0.07);
+  }
+}
+
+@media (max-width: 820px) {
+  .admin-nav-group__trigger {
+    min-height: 46px;
+  }
+
+  .admin-nav__sublink {
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 420px) {
+  .admin-nav-group__trigger {
+    min-height: 48px;
+
+    font-size: 14px;
+  }
+
+  .admin-nav__sublink {
+    min-height: 46px;
+
+    font-size: 13px;
+  }
+}
+/* ==========================================================================
+   PATCH 06.7 - SIMPLE STUDIES TABLE
+   ========================================================================== */
+
+.admin-simple-study-panel {
+  overflow: hidden;
+}
+
+.admin-simple-study-toolbar {
+  min-height: 68px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+
+  padding: 13px 16px;
+
+  border-bottom: 1px solid #e7eef5;
+}
+
+.admin-simple-study-toolbar > div:first-child {
+  min-width: 0;
+
+  display: grid;
+  gap: 2px;
+}
+
+.admin-simple-study-toolbar > div:first-child strong {
+  color: #234c73;
+
+  font-size: 14px;
+}
+
+.admin-simple-study-toolbar > div:first-child span {
+  color: #8597a9;
+
+  font-size: 10px;
+}
+
+.admin-simple-study-table-wrap {
+  width: 100%;
+
+  overflow-x: auto;
+}
+
+.admin-simple-study-table {
+  width: 100%;
+
+  border-collapse: collapse;
+
+  table-layout: fixed;
+}
+
+.admin-simple-study-table th {
+  padding: 11px 16px;
+
+  border-bottom: 1px solid #e8eef4;
+
+  color: #7890a6;
+  background: #f8fafc;
+
+  font-size: 10px;
+  font-weight: 800;
+  text-align: left;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.admin-simple-study-table th:first-child {
+  width: auto;
+}
+
+.admin-simple-study-table__actions-heading {
+  width: 105px;
+}
+
+.admin-simple-study-table td {
+  min-height: 58px;
+
+  padding: 11px 16px;
+
+  border-bottom: 1px solid #edf2f7;
+
+  vertical-align: middle;
+}
+
+.admin-simple-study-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.admin-simple-study-table tbody tr.is-editing {
+  background: #f5faff;
+}
+
+.admin-study-name-only {
+  display: block;
+
+  overflow-wrap: anywhere;
+
+  color: #254e75;
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.admin-study-inline-input {
+  width: 100%;
+  min-height: 40px;
+
+  padding: 0 11px;
+
+  border: 1px solid #7faedf;
+  border-radius: 8px;
+  outline: 0;
+
+  color: #234d73;
+  background: #ffffff;
+
+  font: inherit;
+  font-size: 13px;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(25, 108, 205, 0.08);
+}
+
+.admin-table-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.admin-table-icon-button {
+  width: 36px;
+  height: 36px;
+
+  display: grid;
+  place-items: center;
+
+  flex: 0 0 36px;
+
+  border: 1px solid #d2dee9;
+  border-radius: 8px;
+
+  color: #526f89;
+  background: #ffffff;
+
+  cursor: pointer;
+
+  transition:
+    border-color 150ms ease,
+    color 150ms ease,
+    background 150ms ease,
+    transform 120ms ease;
+}
+
+.admin-table-icon-button.is-edit {
+  color: #1765ad;
+}
+
+.admin-table-icon-button.is-delete {
+  color: #a33d3d;
+}
+
+.admin-table-icon-button.is-save {
+  color: #157247;
+}
+
+.admin-table-icon-button:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+
+.admin-simple-study-empty {
+  height: 150px;
+
+  color: #8296aa;
+
+  text-align: center;
+}
+
+.admin-simple-study-empty svg {
+  display: block;
+
+  margin: 0 auto 8px;
+}
+
+.admin-study-translation-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+
+  margin-top: 10px;
+  padding: 10px 12px;
+
+  border: 1px solid #d8e6f3;
+  border-radius: 9px;
+
+  color: #56728d;
+  background: #f6faff;
+
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+.admin-study-translation-note svg {
+  flex: 0 0 auto;
+
+  margin-top: 1px;
+
+  color: #1768b8;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .admin-table-icon-button:not(:disabled):hover {
+    transform: translateY(-1px);
+
+    border-color: #89b5e0;
+    background: #f4f9ff;
+  }
+
+  .admin-table-icon-button.is-delete:not(:disabled):hover {
+    border-color: #e0a6a6;
+
+    color: #8f2929;
+    background: #fff4f4;
+  }
+
+  .admin-table-icon-button.is-save:not(:disabled):hover {
+    border-color: #91cfad;
+
+    color: #0d623a;
+    background: #f0fbf5;
+  }
+}
+
+/* Tablet */
+@media (max-width: 760px) {
+  .admin-simple-study-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .admin-simple-study-toolbar
+  .admin-search-control {
+    width: 100%;
+  }
+
+  .admin-simple-study-table__actions-heading {
+    width: 95px;
+  }
+
+  .admin-simple-study-table th,
+  .admin-simple-study-table td {
+    padding-inline: 12px;
+  }
+
+  .admin-table-icon-button {
+    width: 40px;
+    height: 40px;
+
+    flex-basis: 40px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 520px) {
+  .admin-simple-study-table,
+  .admin-simple-study-table tbody,
+  .admin-simple-study-table tr,
+  .admin-simple-study-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .admin-simple-study-table thead {
+    display: none;
+  }
+
+  .admin-simple-study-table tbody {
+    display: grid;
+    gap: 8px;
+
+    padding: 8px;
+  }
+
+  .admin-simple-study-table tr {
+    overflow: hidden;
+
+    border: 1px solid #e0e9f1;
+    border-radius: 10px;
+
+    background: #ffffff;
+  }
+
+  .admin-simple-study-table td {
+    min-height: 0;
+
+    padding: 11px 12px;
+
+    border-bottom: 0;
+  }
+
+  .admin-simple-study-table td:first-child {
+    padding-bottom: 6px;
+  }
+
+  .admin-simple-study-table td:last-child {
+    padding-top: 6px;
+  }
+
+  .admin-table-actions {
+    justify-content: flex-start;
+  }
+
+  .admin-table-icon-button {
+    width: 44px;
+    height: 44px;
+
+    flex-basis: 44px;
+  }
+
+  .admin-study-name-only {
+    font-size: 14px;
+  }
+
+  .admin-study-inline-input {
+    min-height: 44px;
+
+    font-size: 14px;
+  }
+}
+/* ==========================================================================
+   PATCH 06.9 - AVAILABLE STUDIES + CATALOG
+   ========================================================================== */
+
+.admin-available-studies-panel {
+  margin-bottom: 16px;
+
+  overflow: hidden;
+
+  border-color: #cfe1f2;
+}
+
+.admin-catalog-study-panel {
+  overflow: hidden;
+}
+
+.admin-study-section-heading {
+  min-height: 68px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  padding: 13px 16px;
+
+  border-bottom: 1px solid #e6eef5;
+
+  background:
+    linear-gradient(
+      90deg,
+      #f5faff,
+      #ffffff
+    );
+}
+
+.admin-study-section-heading > div:first-child {
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-study-section-heading h2 {
+  margin: 0 0 2px;
+
+  color: #244d73;
+
+  font-size: 14px;
+}
+
+.admin-study-section-heading p {
+  margin: 0;
+
+  color: #7c91a5;
+
+  font-size: 10px;
+}
+
+.admin-study-count-badge {
+  min-width: 34px;
+  height: 30px;
+
+  display: grid;
+  place-items: center;
+
+  padding: 0 9px;
+
+  border-radius: 999px;
+
+  color: #ffffff;
+  background: #0e66d7;
+
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.admin-study-status-column {
+  width: 126px;
+  text-align: center !important;
+}
+
+.admin-availability-switch {
+  width: 92px;
+  min-height: 38px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  padding: 0 9px;
+
+  border: 1px solid #d2dee9;
+  border-radius: 999px;
+
+  background: #f3f5f7;
+  color: #6d7a86;
+
+  font: inherit;
+  font-size: 10px;
+  font-weight: 800;
+
+  cursor: pointer;
+
+  transition:
+    border-color 150ms ease,
+    background 150ms ease,
+    color 150ms ease,
+    transform 120ms ease;
+}
+
+.admin-availability-switch__track {
+  position: relative;
+
+  width: 34px;
+  height: 19px;
+
+  flex: 0 0 34px;
+
+  border-radius: 999px;
+
+  background: #b7c1ca;
+
+  transition: background 150ms ease;
+}
+
+.admin-availability-switch__track > span {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+
+  width: 13px;
+  height: 13px;
+
+  border-radius: 50%;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 1px 3px
+    rgba(0, 0, 0, 0.18);
+
+  transition: transform 150ms ease;
+}
+
+.admin-availability-switch.is-on {
+  border-color: #a9d9bf;
+
+  color: #17623f;
+  background: #edf9f2;
+}
+
+.admin-availability-switch.is-on
+.admin-availability-switch__track {
+  background: #1b9c60;
+}
+
+.admin-availability-switch.is-on
+.admin-availability-switch__track > span {
+  transform: translateX(15px);
+}
+
+.admin-availability-switch.is-off {
+  border-color: #d4dde5;
+
+  color: #707b85;
+  background: #f3f5f7;
+}
+
+.admin-availability-switch:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+
+.admin-new-study-off {
+  width: 60px;
+  min-height: 30px;
+
+  display: inline-grid;
+  place-items: center;
+
+  border-radius: 999px;
+
+  color: #717c86;
+  background: #edf0f3;
+
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.admin-available-study-table
+td:last-child,
+.admin-catalog-study-table
+td:nth-child(2) {
+  text-align: center;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .admin-availability-switch:not(:disabled):hover {
+    transform: translateY(-1px);
+  }
+
+  .admin-availability-switch.is-on:not(:disabled):hover {
+    border-color: #7cc79f;
+
+    background: #e5f7ed;
+  }
+
+  .admin-availability-switch.is-off:not(:disabled):hover {
+    border-color: #aac1d5;
+
+    color: #455e75;
+    background: #edf4fa;
+  }
+}
+
+/* Tablet */
+@media (max-width: 760px) {
+  .admin-study-status-column {
+    width: 112px;
+  }
+
+  .admin-availability-switch {
+    min-height: 42px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 520px) {
+  .admin-study-section-heading {
+    align-items: flex-start;
+  }
+
+  .admin-available-study-table,
+  .admin-available-study-table tbody,
+  .admin-available-study-table tr,
+  .admin-available-study-table td,
+  .admin-catalog-study-table,
+  .admin-catalog-study-table tbody,
+  .admin-catalog-study-table tr,
+  .admin-catalog-study-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .admin-available-study-table thead,
+  .admin-catalog-study-table thead {
+    display: none;
+  }
+
+  .admin-available-study-table tbody,
+  .admin-catalog-study-table tbody {
+    display: grid;
+    gap: 8px;
+
+    padding: 8px;
+  }
+
+  .admin-available-study-table tr,
+  .admin-catalog-study-table tr {
+    overflow: hidden;
+
+    border: 1px solid #e0e9f1;
+    border-radius: 10px;
+
+    background: #ffffff;
+  }
+
+  .admin-available-study-table td,
+  .admin-catalog-study-table td {
+    min-height: 0;
+
+    padding: 9px 12px;
+
+    border: 0;
+  }
+
+  .admin-available-study-table td:last-child,
+  .admin-catalog-study-table td:nth-child(2) {
+    text-align: left;
+  }
+
+  .admin-availability-switch {
+    width: 100%;
+    min-height: 44px;
+
+    justify-content: space-between;
+
+    border-radius: 9px;
+  }
+
+  .admin-catalog-study-table
+  .admin-table-actions {
+    width: 100%;
+  }
+
+  .admin-catalog-study-table
+  .admin-table-icon-button {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+/* ==========================================================================
+   PATCH 06.10 - STUDIES PAGINATION
+   ========================================================================== */
+
+.admin-table-pagination {
+  min-height: 58px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  padding: 10px 14px;
+
+  border-top: 1px solid #e8eef4;
+
+  background: #fbfcfe;
+}
+
+.admin-table-pagination__summary {
+  color: #8092a4;
+
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.admin-table-pagination__controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-table-pagination__page {
+  min-width: 94px;
+
+  color: #456684;
+
+  font-size: 10px;
+  font-weight: 750;
+  text-align: center;
+}
+
+.admin-pagination-button {
+  width: 36px;
+  height: 36px;
+
+  display: grid;
+  place-items: center;
+
+  border: 1px solid #cad9e7;
+  border-radius: 8px;
+
+  color: #245f95;
+  background: #ffffff;
+
+  cursor: pointer;
+
+  transition:
+    border-color 150ms ease,
+    color 150ms ease,
+    background 150ms ease,
+    transform 120ms ease;
+}
+
+.admin-pagination-button:disabled {
+  opacity: 0.38;
+
+  color: #7f8b96;
+  background: #f2f4f6;
+
+  cursor: not-allowed;
+  transform: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .admin-pagination-button:not(:disabled):hover {
+    transform: translateY(-1px);
+
+    border-color: #79aee0;
+
+    color: #0d62b1;
+    background: #f2f8ff;
+  }
+}
+
+@media (max-width: 520px) {
+  .admin-table-pagination {
+    align-items: stretch;
+    flex-direction: column;
+
+    min-height: 0;
+
+    padding: 10px;
+  }
+
+  .admin-table-pagination__summary {
+    text-align: center;
+  }
+
+  .admin-table-pagination__controls {
+    width: 100%;
+
+    display: grid;
+    grid-template-columns:
+      44px
+      minmax(0, 1fr)
+      44px;
+  }
+
+  .admin-pagination-button {
+    width: 44px;
+    height: 44px;
+  }
+
+  .admin-table-pagination__page {
+    min-width: 0;
+
+    align-self: center;
+
+    font-size: 11px;
+  }
+}
+/* ==========================================================================
+   PATCH 06.12 - BRANCH STUDIES PAGINATION
+   ========================================================================== */
+
+.admin-branch-studies-pagination {
+  min-height: 58px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  padding: 10px 14px;
+
+  border-top: 1px solid #e8eef4;
+
+  background: #fbfcfe;
+}
+
+.admin-branch-studies-pagination__summary {
+  color: #8092a4;
+
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.admin-branch-studies-pagination__controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-branch-studies-pagination__page {
+  min-width: 94px;
+
+  color: #456684;
+
+  font-size: 10px;
+  font-weight: 750;
+  text-align: center;
+}
+
+.admin-branch-pagination-button {
+  width: 36px;
+  height: 36px;
+
+  display: grid;
+  place-items: center;
+
+  border: 1px solid #cad9e7;
+  border-radius: 8px;
+
+  color: #245f95;
+  background: #ffffff;
+
+  cursor: pointer;
+
+  transition:
+    border-color 150ms ease,
+    color 150ms ease,
+    background 150ms ease,
+    transform 120ms ease;
+}
+
+.admin-branch-pagination-button:disabled {
+  opacity: 0.38;
+
+  color: #7f8b96;
+  background: #f2f4f6;
+
+  cursor: not-allowed;
+  transform: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .admin-branch-pagination-button:not(:disabled):hover {
+    transform: translateY(-1px);
+
+    border-color: #79aee0;
+
+    color: #0d62b1;
+    background: #f2f8ff;
+  }
+}
+
+@media (max-width: 520px) {
+  .admin-branch-studies-pagination {
+    align-items: stretch;
+    flex-direction: column;
+
+    min-height: 0;
+
+    padding: 10px;
+  }
+
+  .admin-branch-studies-pagination__summary {
+    text-align: center;
+  }
+
+  .admin-branch-studies-pagination__controls {
+    width: 100%;
+
+    display: grid;
+    grid-template-columns:
+      44px
+      minmax(0, 1fr)
+      44px;
+  }
+
+  .admin-branch-pagination-button {
+    width: 44px;
+    height: 44px;
+  }
+
+  .admin-branch-studies-pagination__page {
+    min-width: 0;
+
+    align-self: center;
+
+    font-size: 11px;
+  }
+}
+/* ==========================================================================
+   PATCH 06.14 - BRANCH PHOTO + GOOGLE MAPS
+   ========================================================================== */
+
+.admin-field-help {
+  display: block;
+
+  margin-top: 5px;
+
+  color: #7c8d9c;
+
+  font-size: 10px;
+}
+
+.admin-map-preview-link {
+  width: 34px;
+  height: 34px;
+
+  display: grid;
+  place-items: center;
+
+  flex: 0 0 auto;
+
+  border-radius: 7px;
+
+  color: #1769aa;
+  background: #edf7ff;
+}
+
+.admin-branch-photo-field {
+  display: grid;
+  gap: 7px;
+}
+
+.admin-branch-photo-field__label {
+  color: #456684;
+
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.admin-branch-photo-editor {
+  display: grid;
+  grid-template-columns: 190px minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+
+  padding: 12px;
+
+  border: 1px solid #dce7f0;
+  border-radius: 11px;
+
+  background: #f9fbfd;
+}
+
+.admin-branch-photo-preview {
+  width: 190px;
+  aspect-ratio: 16 / 10;
+
+  overflow: hidden;
+
+  border: 1px solid #d5e1ea;
+  border-radius: 9px;
+
+  background: #eef4f8;
+}
+
+.admin-branch-photo-preview img {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+}
+
+.admin-branch-photo-placeholder {
+  width: 100%;
+  height: 100%;
+
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 7px;
+
+  color: #7b95aa;
+
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.admin-branch-photo-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-branch-photo-actions small {
+  width: 100%;
+
+  color: #81909d;
+
+  font-size: 10px;
+}
+
+.admin-visually-hidden-input {
+  position: absolute;
+
+  width: 1px;
+  height: 1px;
+
+  overflow: hidden;
+
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+
+  white-space: nowrap;
+}
+
+.admin-button.is-disabled {
+  opacity: 0.5;
+
+  pointer-events: none;
+}
+
+.admin-button--danger-soft {
+  border: 1px solid #efc7c7;
+
+  color: #a63f3f;
+  background: #fff6f6;
+}
+
+@media (max-width: 680px) {
+  .admin-branch-photo-editor {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-branch-photo-preview {
+    width: 100%;
+    max-width: 360px;
+  }
+
+  .admin-branch-photo-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .admin-branch-photo-actions .admin-button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+/* ==========================================================================
+   PATCH 06.16 - ACTIVITY LOG
+   ========================================================================== */
+
+.admin-audit-page {
+  min-width: 0;
+}
+
+.admin-audit-filter {
+  min-height: 40px;
+
+  padding: 0 12px;
+
+  border: 1px solid #cfdeea;
+  border-radius: 8px;
+
+  color: #315a7d;
+  background: #ffffff;
+
+  font: inherit;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.admin-audit-panel {
+  overflow: hidden;
+}
+
+.admin-audit-table-wrap {
+  width: 100%;
+
+  overflow-x: auto;
+}
+
+.admin-audit-table {
+  width: 100%;
+
+  border-collapse: collapse;
+}
+
+.admin-audit-table th {
+  padding: 10px 12px;
+
+  border-bottom: 1px solid #e2ebf3;
+
+  color: #607d98;
+  background: #f8fbfd;
+
+  font-size: 10px;
+  font-weight: 800;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.admin-audit-table td {
+  padding: 11px 12px;
+
+  border-bottom: 1px solid #edf2f6;
+
+  color: #4e687f;
+
+  font-size: 11px;
+  vertical-align: middle;
+}
+
+.admin-audit-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.admin-audit-date {
+  min-width: 145px;
+
+  color: #657f96 !important;
+
+  white-space: nowrap;
+}
+
+.admin-audit-user {
+  display: block;
+
+  color: #244e73;
+
+  font-size: 11px;
+}
+
+.admin-audit-role {
+  display: block;
+
+  margin-top: 2px;
+
+  color: #8a9aa8;
+
+  font-size: 9px;
+}
+
+.admin-audit-action {
+  min-width: 64px;
+
+  display: inline-grid;
+  place-items: center;
+
+  padding: 5px 8px;
+
+  border-radius: 999px;
+
+  font-size: 9px;
+  font-weight: 850;
+}
+
+.admin-audit-action.is-create {
+  color: #17613d;
+  background: #e9f8f0;
+}
+
+.admin-audit-action.is-edit {
+  color: #1f5f91;
+  background: #eaf4fc;
+}
+
+.admin-audit-action.is-delete {
+  color: #9c3b3b;
+  background: #fff0f0;
+}
+
+.admin-audit-action.is-upload {
+  color: #6b4c17;
+  background: #fff7df;
+}
+
+.admin-audit-description {
+  min-width: 260px;
+
+  overflow-wrap: anywhere;
+}
+
+.admin-audit-empty {
+  padding: 28px !important;
+
+  color: #8395a5 !important;
+
+  text-align: center;
+}
+
+@media (max-width: 720px) {
+  .admin-audit-filter {
+    width: 100%;
+  }
+
+  .admin-audit-table,
+  .admin-audit-table tbody,
+  .admin-audit-table tr,
+  .admin-audit-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .admin-audit-table thead {
+    display: none;
+  }
+
+  .admin-audit-table tbody {
+    display: grid;
+    gap: 9px;
+
+    padding: 9px;
+  }
+
+  .admin-audit-table tr {
+    overflow: hidden;
+
+    border: 1px solid #e0e9f1;
+    border-radius: 10px;
+
+    background: #ffffff;
+  }
+
+  .admin-audit-table td {
+    display: grid;
+    grid-template-columns: 92px minmax(0, 1fr);
+    gap: 9px;
+    align-items: start;
+
+    padding: 8px 11px;
+
+    border: 0;
+  }
+
+  .admin-audit-table td::before {
+    content: attr(data-label);
+
+    color: #8a9aa8;
+
+    font-size: 9px;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  .admin-audit-date,
+  .admin-audit-description {
+    min-width: 0;
+  }
+
+  .admin-audit-empty {
+    display: block !important;
+  }
+
+  .admin-audit-empty::before {
+    display: none;
+  }
+}
+/* ==========================================================================
+   PATCH 06.17 - PATIENT REGISTRY
+   ========================================================================== */
+
+.admin-patients-page {
+  min-width: 0;
+}
+
+.admin-patients-panel {
+  overflow: hidden;
+}
+
+.admin-patients-toolbar {
+  min-height: 62px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+
+  padding: 11px 14px;
+
+  border-bottom: 1px solid #e5edf4;
+}
+
+.admin-patients-toolbar > div:first-child {
+  display: grid;
+  gap: 2px;
+}
+
+.admin-patients-toolbar > div:first-child strong {
+  color: #244e73;
+  font-size: 13px;
+}
+
+.admin-patients-toolbar > div:first-child span {
+  color: #8092a4;
+  font-size: 10px;
+}
+
+.admin-patients-toolbar__controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-patient-status-filter {
+  min-height: 38px;
+  padding: 0 10px;
+
+  border: 1px solid #d1dfe9;
+  border-radius: 8px;
+
+  color: #315a7d;
+  background: #ffffff;
+
+  font: inherit;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.admin-patients-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.admin-patients-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.admin-patients-table th {
+  padding: 10px 12px;
+
+  border-bottom: 1px solid #e2ebf3;
+
+  color: #607d98;
+  background: #f8fbfd;
+
+  font-size: 10px;
+  font-weight: 800;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.admin-patients-table td {
+  padding: 11px 12px;
+
+  border-bottom: 1px solid #edf2f6;
+
+  color: #4e687f;
+  font-size: 11px;
+  vertical-align: middle;
+}
+
+.admin-patients-table td > strong,
+.admin-patients-table td > span,
+.admin-patients-table td > small {
+  display: block;
+}
+
+.admin-patients-table td small {
+  margin-top: 2px;
+
+  color: #8a9aa8;
+  font-size: 9px;
+}
+
+.admin-patient-name {
+  color: #244e73;
+}
+
+.admin-patient-status {
+  width: max-content;
+  padding: 5px 8px;
+
+  border-radius: 999px;
+
+  font-size: 9px;
+  font-weight: 850;
+}
+
+.admin-patient-status.is-active {
+  color: #17613d;
+  background: #e9f8f0;
+}
+
+.admin-patient-status.is-inactive {
+  color: #7b5a5a;
+  background: #f5eded;
+}
+
+.admin-patient-readonly {
+  color: #8a9aa8;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.admin-patient-empty {
+  padding: 30px !important;
+
+  color: #8597a6 !important;
+  text-align: center;
+}
+
+.admin-patient-empty svg {
+  display: block;
+  margin: 0 auto 7px;
+}
+
+.admin-patient-modal-backdrop {
+  position: fixed;
+  z-index: 2000;
+  inset: 0;
+
+  display: grid;
+  place-items: center;
+
+  padding: 18px;
+
+  background: rgba(14, 36, 57, 0.48);
+}
+
+.admin-patient-modal {
+  width: min(760px, 100%);
+  max-height: calc(100vh - 36px);
+
+  overflow-y: auto;
+
+  border: 1px solid #dce7ef;
+  border-radius: 14px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 22px 60px
+    rgba(13, 42, 66, 0.22);
+}
+
+.admin-patient-modal__header {
+  position: sticky;
+  z-index: 2;
+  top: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  padding: 14px 16px;
+
+  border-bottom: 1px solid #e6edf3;
+
+  background: #ffffff;
+}
+
+.admin-patient-modal__header > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-patient-modal__header h2 {
+  margin: 0;
+
+  color: #234d73;
+  font-size: 15px;
+}
+
+.admin-patient-modal__header p {
+  margin: 2px 0 0;
+
+  color: #8395a5;
+  font-size: 10px;
+}
+
+.admin-patient-form {
+  display: grid;
+  gap: 13px;
+
+  padding: 16px;
+}
+
+.admin-patient-textarea {
+  width: 100%;
+  min-height: 90px;
+
+  resize: vertical;
+
+  padding: 11px 12px;
+
+  border: 1px solid #d4e0ea;
+  border-radius: 8px;
+  outline: 0;
+
+  color: #173e68;
+  background: #ffffff;
+
+  font: inherit;
+  font-size: 13px;
+}
+
+.admin-patient-textarea:focus {
+  border-color: #7eb3df;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(59, 139, 202, 0.09);
+}
+
+.admin-patient-modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+
+  padding-top: 4px;
+}
+
+@media (max-width: 820px) {
+  .admin-patients-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .admin-patients-toolbar__controls {
+    width: 100%;
+  }
+
+  .admin-patients-toolbar__controls .admin-search-control {
+    flex: 1;
+  }
+}
+
+@media (max-width: 680px) {
+  .admin-patients-toolbar__controls {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .admin-patient-status-filter {
+    width: 100%;
+    min-height: 44px;
+  }
+
+  .admin-patients-table,
+  .admin-patients-table tbody,
+  .admin-patients-table tr,
+  .admin-patients-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .admin-patients-table thead {
+    display: none;
+  }
+
+  .admin-patients-table tbody {
+    display: grid;
+    gap: 9px;
+    padding: 9px;
+  }
+
+  .admin-patients-table tr {
+    overflow: hidden;
+
+    border: 1px solid #e0e9f1;
+    border-radius: 10px;
+
+    background: #ffffff;
+  }
+
+  .admin-patients-table td {
+    display: grid;
+    grid-template-columns: 100px minmax(0, 1fr);
+    gap: 9px;
+    align-items: start;
+
+    padding: 8px 11px;
+    border: 0;
+  }
+
+  .admin-patients-table td::before {
+    content: attr(data-label);
+
+    color: #8a9aa8;
+    font-size: 9px;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  .admin-patient-empty {
+    display: block !important;
+  }
+
+  .admin-patient-empty::before {
+    display: none;
+  }
+
+  .admin-patient-modal-backdrop {
+    padding: 0;
+  }
+
+  .admin-patient-modal {
+    width: 100%;
+    max-height: 100vh;
+    min-height: 100vh;
+
+    border: 0;
+    border-radius: 0;
+  }
+
+  .admin-patient-form .admin-form-two-columns {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-patient-modal__actions {
+    align-items: stretch;
+    flex-direction: column-reverse;
+  }
+
+  .admin-patient-modal__actions .admin-button {
+    width: 100%;
+    min-height: 44px;
+    justify-content: center;
+  }
+}
+/* ==========================================================================
+   HOTFIX 06.17.1 - PATIENT FILTER LAYOUT
+   ========================================================================== */
+
+.admin-patients-panel {
+  min-width: 0;
+}
+
+.admin-patients-toolbar {
+  position: relative;
+
+  width: 100%;
+  min-width: 0;
+
+  box-sizing: border-box;
+
+  flex-wrap: wrap;
+
+  overflow: visible;
+}
+
+.admin-patients-toolbar > div:first-child {
+  min-width: 150px;
+  flex: 0 1 auto;
+}
+
+.admin-patients-toolbar__controls {
+  min-width: 0;
+  max-width: 100%;
+
+  flex: 1 1 420px;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+
+  box-sizing: border-box;
+}
+
+.admin-patients-toolbar__controls .admin-search-control {
+  min-width: 220px;
+  max-width: 100%;
+
+  flex: 1 1 280px;
+}
+
+.admin-patients-toolbar__controls .admin-search-control input {
+  min-width: 0;
+  width: 100%;
+}
+
+.admin-patient-status-filter {
+  position: static !important;
+
+  width: auto;
+  min-width: 130px;
+  max-width: 100%;
+
+  flex: 0 0 140px;
+
+  box-sizing: border-box;
+
+  margin: 0;
+}
+
+.admin-patients-table-wrap {
+  position: relative;
+  z-index: 0;
+
+  clear: both;
+
+  width: 100%;
+  min-width: 0;
+
+  margin-top: 0;
+}
+
+@media (max-width: 980px) {
+  .admin-patients-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .admin-patients-toolbar__controls {
+    width: 100%;
+    flex: 0 0 auto;
+
+    justify-content: stretch;
+  }
+
+  .admin-patients-toolbar__controls .admin-search-control {
+    flex: 1 1 260px;
+  }
+
+  .admin-patient-status-filter {
+    flex: 0 0 150px;
+  }
+}
+
+@media (max-width: 620px) {
+  .admin-patients-toolbar__controls {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .admin-patients-toolbar__controls .admin-search-control {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .admin-patient-status-filter {
+    width: 100%;
+    min-width: 0;
+
+    min-height: 44px;
+
+    flex: none;
+  }
+}
+/* ==========================================================================
+   PATCH 06.19 - DASHBOARD TWO STATS
+   ========================================================================== */
+
+.admin-dashboard .admin-stats-grid {
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+}
+
+@media (max-width: 620px) {
+  .admin-dashboard .admin-stats-grid {
+    grid-template-columns: 1fr;
+  }
+}
+/* ==========================================================================
+   PATCH 06.21 - RESULTS UPLOAD
+   ========================================================================== */
+
+.admin-results-upload-page {
+  min-width: 0;
+}
+
+.admin-results-upload-grid {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1.55fr)
+    minmax(250px, 0.45fr);
+  gap: 14px;
+  align-items: start;
+
+  margin-bottom: 14px;
+}
+
+.admin-result-upload-form {
+  display: grid;
+  gap: 13px;
+
+  padding: 15px;
+}
+
+.admin-result-patient-search {
+  position: relative;
+
+  min-height: 45px;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 0 11px;
+
+  border: 1px solid #d6e2eb;
+  border-radius: 9px;
+
+  background: #ffffff;
+}
+
+.admin-result-patient-search svg {
+  flex: 0 0 auto;
+
+  color: #7890a6;
+}
+
+.admin-result-patient-search input {
+  min-width: 0;
+  width: 100%;
+
+  border: 0;
+  outline: 0;
+
+  color: #173e68;
+  background: transparent;
+
+  font: inherit;
+  font-size: 13px;
+}
+
+.admin-result-patient-search > button {
+  width: 30px;
+  height: 30px;
+
+  display: grid;
+  place-items: center;
+
+  flex: 0 0 auto;
+
+  border: 0;
+  border-radius: 7px;
+
+  color: #70879b;
+  background: #f0f5f9;
+
+  cursor: pointer;
+}
+
+.admin-result-help {
+  display: block;
+
+  margin-top: 5px;
+
+  color: #8799a8;
+
+  font-size: 10px;
+}
+
+.admin-result-patient-matches {
+  position: absolute;
+  z-index: 30;
+
+  width: min(
+    620px,
+    calc(100% - 30px)
+  );
+  max-height: 270px;
+
+  overflow-y: auto;
+
+  margin-top: 5px;
+
+  border: 1px solid #dce6ee;
+  border-radius: 10px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 16px 34px
+    rgba(28, 67, 99, 0.16);
+}
+
+.admin-result-patient-matches > button {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  padding: 10px 12px;
+
+  border: 0;
+  border-bottom: 1px solid #edf2f6;
+
+  color: #315a7d;
+  background: #ffffff;
+
+  text-align: left;
+  cursor: pointer;
+}
+
+.admin-result-patient-matches > button:last-child {
+  border-bottom: 0;
+}
+
+.admin-result-patient-matches > button:hover {
+  background: #f7fbfe;
+}
+
+.admin-result-patient-matches span,
+.admin-result-selected-patient span {
+  min-width: 0;
+
+  display: grid;
+  gap: 2px;
+}
+
+.admin-result-patient-matches strong,
+.admin-result-selected-patient strong {
+  color: #244e73;
+
+  font-size: 11px;
+}
+
+.admin-result-patient-matches small,
+.admin-result-selected-patient small {
+  color: #8295a6;
+
+  font-size: 9px;
+}
+
+.admin-result-selected-patient {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  margin-top: 7px;
+  padding: 9px 10px;
+
+  border: 1px solid #cfe8dc;
+  border-radius: 8px;
+
+  color: #21714a;
+  background: #f0faf5;
+}
+
+.admin-result-file-control {
+  position: relative;
+
+  min-height: 72px;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 12px;
+
+  border: 1px dashed #a9bfd1;
+  border-radius: 10px;
+
+  color: #49708f;
+  background: #f9fcfe;
+}
+
+.admin-result-file-control > div {
+  min-width: 0;
+
+  display: grid;
+  gap: 3px;
+}
+
+.admin-result-file-control strong {
+  overflow: hidden;
+
+  color: #315a7d;
+
+  font-size: 11px;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-result-file-control small {
+  color: #8497a7;
+
+  font-size: 9px;
+}
+
+.admin-result-file-control input {
+  position: absolute;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  opacity: 0;
+
+  cursor: pointer;
+}
+
+.admin-result-release-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+
+  padding: 11px;
+
+  border: 1px solid #e1eaf1;
+  border-radius: 9px;
+
+  background: #fbfdff;
+}
+
+.admin-result-release-option input {
+  width: 17px;
+  height: 17px;
+
+  margin-top: 2px;
+
+  flex: 0 0 auto;
+}
+
+.admin-result-release-option > span {
+  display: grid;
+  gap: 2px;
+}
+
+.admin-result-release-option strong {
+  color: #315a7d;
+
+  font-size: 11px;
+}
+
+.admin-result-release-option small {
+  color: #8295a6;
+
+  font-size: 9px;
+  line-height: 1.45;
+}
+
+.admin-result-submit {
+  justify-self: end;
+}
+
+.admin-result-security-copy {
+  display: grid;
+  gap: 10px;
+
+  padding: 14px;
+}
+
+.admin-result-security-copy p {
+  margin: 0;
+
+  color: #677f94;
+
+  font-size: 10px;
+  line-height: 1.55;
+}
+
+.admin-results-list-panel {
+  overflow: hidden;
+}
+
+.admin-results-list-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+
+  padding: 11px 14px;
+
+  border-bottom: 1px solid #e5edf4;
+}
+
+.admin-results-list-toolbar > div:first-child {
+  display: grid;
+  gap: 2px;
+}
+
+.admin-results-list-toolbar > div:first-child strong {
+  color: #244e73;
+
+  font-size: 13px;
+}
+
+.admin-results-list-toolbar > div:first-child span {
+  color: #8092a4;
+
+  font-size: 10px;
+}
+
+.admin-results-list-controls {
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1 1 420px;
+  justify-content: flex-end;
+}
+
+.admin-results-list-controls .admin-search-control {
+  min-width: 230px;
+
+  flex: 1 1 300px;
+}
+
+.admin-result-status-filter {
+  min-height: 38px;
+  min-width: 125px;
+
+  padding: 0 10px;
+
+  border: 1px solid #d1dfe9;
+  border-radius: 8px;
+
+  color: #315a7d;
+  background: #ffffff;
+
+  font: inherit;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.admin-results-table-wrap {
+  width: 100%;
+
+  overflow-x: auto;
+}
+
+.admin-results-table {
+  width: 100%;
+
+  border-collapse: collapse;
+}
+
+.admin-results-table th {
+  padding: 10px 11px;
+
+  border-bottom: 1px solid #e2ebf3;
+
+  color: #607d98;
+  background: #f8fbfd;
+
+  font-size: 9px;
+  font-weight: 800;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.admin-results-table td {
+  padding: 10px 11px;
+
+  border-bottom: 1px solid #edf2f6;
+
+  color: #4e687f;
+
+  font-size: 10px;
+  vertical-align: middle;
+}
+
+.admin-results-table td > strong,
+.admin-results-table td > span,
+.admin-results-table td > small {
+  display: block;
+}
+
+.admin-results-table td small {
+  margin-top: 2px;
+
+  color: #8798a7;
+
+  font-size: 8px;
+}
+
+.admin-result-patient-name {
+  color: #244e73;
+}
+
+.admin-result-order-number {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.admin-result-order-number strong {
+  color: #315a7d;
+
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.admin-result-order-number button {
+  width: 26px;
+  height: 26px;
+
+  display: grid;
+  place-items: center;
+
+  border: 0;
+  border-radius: 6px;
+
+  color: #6e879d;
+  background: #eef4f8;
+
+  cursor: pointer;
+}
+
+.admin-result-status {
+  width: max-content;
+
+  padding: 5px 8px;
+
+  border-radius: 999px;
+
+  font-size: 8px;
+  font-weight: 850;
+}
+
+.admin-result-status.is-draft {
+  color: #7c611f;
+  background: #fff7dd;
+}
+
+.admin-result-status.is-released {
+  color: #17613d;
+  background: #e9f8f0;
+}
+
+.admin-result-status.is-cancelled {
+  color: #8f4545;
+  background: #fbecec;
+}
+
+.admin-result-view-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+
+  min-height: 31px;
+
+  padding: 0 9px;
+
+  border: 1px solid #d4e2ed;
+  border-radius: 7px;
+
+  color: #315f85;
+  background: #ffffff;
+
+  font: inherit;
+  font-size: 9px;
+  font-weight: 750;
+
+  cursor: pointer;
+}
+
+.admin-result-release-button {
+  min-height: 32px;
+
+  padding: 0 9px;
+
+  font-size: 9px;
+}
+
+.admin-result-metadata-only {
+  color: #8a9aa8;
+
+  font-size: 9px;
+}
+
+.admin-result-empty {
+  padding: 28px !important;
+
+  color: #8495a4 !important;
+
+  text-align: center;
+}
+
+@media (max-width: 1080px) {
+  .admin-results-upload-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-result-security-card {
+    order: -1;
+  }
+}
+
+@media (max-width: 760px) {
+  .admin-results-list-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .admin-results-list-controls {
+    width: 100%;
+
+    flex: 0 0 auto;
+  }
+}
+
+@media (max-width: 680px) {
+  .admin-result-upload-form .admin-form-two-columns {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-result-submit {
+    width: 100%;
+    min-height: 44px;
+
+    justify-self: stretch;
+    justify-content: center;
+  }
+
+  .admin-results-list-controls {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .admin-results-list-controls .admin-search-control {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .admin-result-status-filter {
+    width: 100%;
+    min-height: 44px;
+  }
+
+  .admin-results-table,
+  .admin-results-table tbody,
+  .admin-results-table tr,
+  .admin-results-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .admin-results-table thead {
+    display: none;
+  }
+
+  .admin-results-table tbody {
+    display: grid;
+    gap: 9px;
+
+    padding: 9px;
+  }
+
+  .admin-results-table tr {
+    overflow: hidden;
+
+    border: 1px solid #e0e9f1;
+    border-radius: 10px;
+
+    background: #ffffff;
+  }
+
+  .admin-results-table td {
+    display: grid;
+    grid-template-columns:
+      92px
+      minmax(0, 1fr);
+    gap: 8px;
+    align-items: start;
+
+    padding: 8px 10px;
+
+    border: 0;
+  }
+
+  .admin-results-table td::before {
+    content: attr(data-label);
+
+    color: #8a9aa8;
+
+    font-size: 8px;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  .admin-result-empty {
+    display: block !important;
+  }
+
+  .admin-result-empty::before {
+    display: none;
+  }
+
+  .admin-result-patient-matches {
+    width: calc(100% - 30px);
+  }
+}
+/* ==========================================================================
+   PATCH 06.21.1 - RESULTS FULL WIDTH
+   ========================================================================== */
+
+.admin-results-upload-grid {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.admin-result-upload-card {
+  width: 100%;
+  min-width: 0;
+}
+
+.admin-result-security-card {
+  display: none !important;
+}

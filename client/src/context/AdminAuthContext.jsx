@@ -173,7 +173,7 @@ export function AdminAuthProvider({ children }) {
 
         if (
           !nextProfile?.active ||
-          !["master", "admin"].includes(nextProfile.role)
+          !["master", "admin", "secretary", "laboratorist"].includes(nextProfile.role)
         ) {
           await supabase.auth.signOut();
 

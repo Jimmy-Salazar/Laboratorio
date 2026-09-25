@@ -1,8 +1,8 @@
 import {
   ArrowRight,
-  CalendarDays,
+
   CheckCircle2,
-  ClipboardList,
+
   Clock3,
   FileCheck2,
   TestTube,
@@ -12,13 +12,12 @@ import {
 
 import "../styles/admin.css";
 
+/* PATCH_06_20_1_DASHBOARD_QUICK_ACTIONS */
+
+import { useNavigate } from "react-router-dom";
+/* PATCH_06_19_DASHBOARD_CLEANUP */
+
 const stats = [
-  {
-    label: "Citas de hoy",
-    value: "12",
-    note: "3 pendientes de confirmar",
-    icon: CalendarDays,
-  },
   {
     label: "Pacientes de hoy",
     value: "9",
@@ -26,16 +25,10 @@ const stats = [
     icon: UsersRound,
   },
   {
-    label: "Resultados por liberar",
+    label: "Resultados liberados",
     value: "7",
-    note: "Requieren revisi\u00f3n",
+    note: "Disponibles para consulta",
     icon: TestTube,
-  },
-  {
-    label: "\u00d3rdenes del d\u00eda",
-    value: "14",
-    note: "10 completadas",
-    icon: ClipboardList,
   },
 ];
 
@@ -71,6 +64,8 @@ const appointments = [
 ];
 
 export default function AdminDashboardPage() {
+  const navigate = useNavigate();
+
   return (
     <div className="admin-dashboard">
       <section className="admin-page-heading">
@@ -82,26 +77,8 @@ export default function AdminDashboardPage() {
           <h1>Resumen del laboratorio</h1>
 
           <p>
-            Vista general de citas, pacientes, \u00f3rdenes y resultados.
+            Vista general de pacientes y resultados.
           </p>
-        </div>
-
-        <div className="admin-page-heading__actions">
-          <button
-            type="button"
-            className="admin-button admin-button--secondary"
-          >
-            <UserPlus size={18} />
-            <span>Nuevo paciente</span>
-          </button>
-
-          <button
-            type="button"
-            className="admin-button admin-button--primary"
-          >
-            <CalendarDays size={18} />
-            <span>Nueva cita</span>
-          </button>
         </div>
       </section>
 
@@ -184,36 +161,33 @@ export default function AdminDashboardPage() {
               </span>
 
               <div>
-                <h2>Acciones r\u00e1pidas</h2>
-                <p>Operaciones frecuentes</p>
+                <h2>{"Acciones r\u00e1pidas"}</h2>
+                <p>Accesos directos frecuentes</p>
               </div>
             </div>
           </header>
 
           <div className="admin-quick-actions">
-            <button type="button">
-              <CalendarDays size={21} />
+            <button
+              type="button"
+              onClick={() => navigate("/admin/pacientes")}
+            >
+              <UserPlus size={21} />
               <span>
-                <strong>Registrar cita</strong>
-                <small>Crear una nueva cita manual</small>
+                <strong>Nuevo paciente</strong>
+                <small>Registrar un nuevo paciente</small>
               </span>
               <ArrowRight size={17} />
             </button>
 
-            <button type="button">
-              <ClipboardList size={21} />
-              <span>
-                <strong>Crear orden</strong>
-                <small>Registrar estudios para un paciente</small>
-              </span>
-              <ArrowRight size={17} />
-            </button>
-
-            <button type="button">
+            <button
+              type="button"
+              onClick={() => navigate("/admin/resultados")}
+            >
               <FileCheck2 size={21} />
               <span>
-                <strong>Cargar resultado</strong>
-                <small>Subir PDF y liberar resultado</small>
+                <strong>Subir resultado</strong>
+                <small>Cargar y liberar resultado del paciente</small>
               </span>
               <ArrowRight size={17} />
             </button>

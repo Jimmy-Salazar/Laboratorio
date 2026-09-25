@@ -1,35 +1,23 @@
-import { useEffect, useRef, useState } from "react";
 import {
-  UsersRound,
-  Droplets,
-  FlaskConical,
-  Microscope,
-  ShieldCheck,
-  HeartPulse,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import {
   ChevronLeft,
   ChevronRight,
+  FlaskConical,
 } from "lucide-react";
 
 import SectionHeader from "../common/SectionHeader";
 import { useLanguage } from "../../context/LanguageContext";
+import { supabase } from "../../lib/supabase";
 
-/*
- * CARRUSEL AUTOMATICO DE ESPECIALIDADES
- * ---------------------------------------------------------------------------
- * - Una sola fila horizontal.
- * - Avance automatico cada 4 segundos.
- * - Bucle continuo: al llegar al final vuelve al inicio.
- * - Flechas manuales.
- * - Pausa al colocar el mouse encima o al enfocar el carrusel.
- * - Compatible con touch y desplazamiento horizontal.
- */
-
-const iconMap = {
-  droplets: Droplets,
-  flask: FlaskConical,
-  microscope: Microscope,
-  shield: ShieldCheck,
-  lungs: HeartPulse,
+const fallbackStudy = {
+  id: "study-placeholder",
+  name_es: "Estudio por Definir",
+  name_en: "Study to Be Defined",
 };
 
 function getVisibleCardCount() {
@@ -51,9 +39,115 @@ function getVisibleCardCount() {
 }
 
 export default function SpecialtiesSection() {
-  const { content } = useLanguage();
+  const { language } = useLanguage();
+
   const carouselRef = useRef(null);
+
+  const [studies, setStudies] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [isPaused, setIsPaused] = useState(false);
+
+  useEffect(() => {
+    let mounted = true;
+
+    async function loadStudies() {
+      setLoading(true);
+
+      const { data, error } = await supabase
+        .from("studies")
+        .select(
+          "id, name_es, name_en, sort_order",
+        )
+        .eq("active", true)
+        .eq("booking_enabled", true)
+        .order("sort_order", {
+          ascending: true,
+        })
+        .order("name_es", {
+          ascending: true,
+        });
+
+      if (!mounted) {
+        return;
+      }
+
+      if (error) {
+        console.error(
+          "Could not load Home studies:",
+          error,
+        );
+
+        setStudies([]);
+        setLoading(false);
+        return;
+      }
+
+      setStudies(data ?? []);
+      setLoading(false);
+    }
+
+    loadStudies();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const visibleStudies = useMemo(() => {
+    if (loading) {
+      return [];
+    }
+
+    if (studies.length === 0) {
+      return [fallbackStudy];
+    }
+
+    return studies;
+  }, [loading, studies]);
+
+  const sectionCopy =
+    language === "en"
+      ? {
+          title: "Studies",
+          subtitle:
+            "Explore our available laboratory studies",
+          previous:
+            "Previous studies",
+          next:
+            "Next studies",
+          loading:
+            "Loading studies...",
+          fallback:
+            "Study to Be Defined",
+        }
+      : {
+          title: "Estudios",
+          subtitle:
+            "Conoce los estudios disponibles",
+          previous:
+            "Estudios anteriores",
+          next:
+            "Estudios siguientes",
+          loading:
+            "Cargando estudios...",
+          fallback:
+            "Estudio por Definir",
+        };
+
+  function getStudyName(study) {
+    const requestedName =
+      language === "en"
+        ? study.name_en
+        : study.name_es;
+
+    const cleanName =
+      String(requestedName ?? "").trim();
+
+    return (
+      cleanName ||
+      sectionCopy.fallback
+    );
+  }
 
   function moveCarousel(direction) {
     const carousel = carouselRef.current;
@@ -62,41 +156,51 @@ export default function SpecialtiesSection() {
       return;
     }
 
-    const firstCard = carousel.querySelector(".specialty-card");
+    const firstCard =
+      carousel.querySelector(
+        ".home-study-card",
+      );
 
     if (!firstCard) {
       return;
     }
 
-    const computedStyles = window.getComputedStyle(carousel);
+    const computedStyles =
+      window.getComputedStyle(carousel);
 
     const gap =
       Number.parseFloat(
         computedStyles.columnGap ||
-        computedStyles.gap ||
-        "0",
+          computedStyles.gap ||
+          "0",
       ) || 0;
 
-    const visibleCardCount = getVisibleCardCount();
+    const visibleCardCount =
+      getVisibleCardCount();
 
     const cardWidth =
-      firstCard.getBoundingClientRect().width;
+      firstCard.getBoundingClientRect()
+        .width;
 
     const scrollDistance =
-      (cardWidth + gap) * visibleCardCount;
+      (cardWidth + gap) *
+      visibleCardCount;
 
     const maxScrollLeft =
-      carousel.scrollWidth - carousel.clientWidth;
+      carousel.scrollWidth -
+      carousel.clientWidth;
 
     if (direction > 0) {
       const isAtEnd =
-        carousel.scrollLeft >= maxScrollLeft - 10;
+        carousel.scrollLeft >=
+        maxScrollLeft - 10;
 
       carousel.scrollTo({
         left: isAtEnd
           ? 0
           : Math.min(
-              carousel.scrollLeft + scrollDistance,
+              carousel.scrollLeft +
+                scrollDistance,
               maxScrollLeft,
             ),
         behavior: "smooth",
@@ -112,33 +216,40 @@ export default function SpecialtiesSection() {
       left: isAtStart
         ? maxScrollLeft
         : Math.max(
-            carousel.scrollLeft - scrollDistance,
+            carousel.scrollLeft -
+              scrollDistance,
             0,
           ),
       behavior: "smooth",
     });
   }
 
-  /*
-   * AUTOPLAY
-   * -------------------------------------------------------------------------
-   * Cada 4 segundos avanza una pagina.
-   * Si el usuario coloca el mouse encima o navega con teclado dentro del
-   * carrusel, el autoplay se pausa temporalmente.
-   */
   useEffect(() => {
-    if (isPaused) {
+    if (
+      isPaused ||
+      loading ||
+      visibleStudies.length <= 1
+    ) {
       return undefined;
     }
 
-    const timer = window.setInterval(() => {
-      moveCarousel(1);
-    }, 4000);
+    const timer =
+      window.setInterval(() => {
+        moveCarousel(1);
+      }, 4000);
 
     return () => {
       window.clearInterval(timer);
     };
-  }, [isPaused]);
+  }, [
+    isPaused,
+    loading,
+    visibleStudies.length,
+  ]);
+
+  const showNavigation =
+    !loading &&
+    visibleStudies.length > 1;
 
   return (
     <section
@@ -146,77 +257,109 @@ export default function SpecialtiesSection() {
       className="content-section content-section--tinted"
     >
       <div className="page-container">
-
         <SectionHeader
-          icon={UsersRound}
-          title={content.specialties.title}
-          subtitle={content.specialties.subtitle}
+          icon={FlaskConical}
+          title={sectionCopy.title}
+          subtitle={sectionCopy.subtitle}
         />
 
-        <div
-          className="specialties-carousel"
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => setIsPaused(false)}
-          onFocusCapture={() => setIsPaused(true)}
-          onBlurCapture={() => setIsPaused(false)}
-        >
-          <button
-            type="button"
-            className="specialties-carousel__arrow specialties-carousel__arrow--left"
-            onClick={() => moveCarousel(-1)}
-            aria-label="Previous specialties"
-          >
-            <ChevronLeft size={22} />
-          </button>
-
+        {loading ? (
           <div
-            ref={carouselRef}
-            className="specialties-carousel__track"
-            role="region"
-            aria-label={content.specialties.title}
+            className="home-studies-loading"
+            role="status"
           >
-            {content.specialties.items.map((specialty) => {
-              const Icon =
-                iconMap[specialty.icon] ??
-                FlaskConical;
+            <FlaskConical
+              size={21}
+              aria-hidden="true"
+            />
 
-              return (
-                <article
-                  className="specialty-card"
-                  key={specialty.id}
-                >
-                  <div className="specialty-card__icon">
-                    <Icon
-                      size={34}
-                      strokeWidth={1.8}
-                      aria-hidden="true"
-                    />
-                  </div>
-
-                  <div className="specialty-card__content">
-                    <h3>
-                      {specialty.title}
-                    </h3>
-
-                    <p>
-                      {specialty.description}
-                    </p>
-                  </div>
-                </article>
-              );
-            })}
+            <span>
+              {sectionCopy.loading}
+            </span>
           </div>
-
-          <button
-            type="button"
-            className="specialties-carousel__arrow specialties-carousel__arrow--right"
-            onClick={() => moveCarousel(1)}
-            aria-label="Next specialties"
+        ) : (
+          <div
+            className="specialties-carousel home-studies-carousel"
+            onMouseEnter={() =>
+              setIsPaused(true)
+            }
+            onMouseLeave={() =>
+              setIsPaused(false)
+            }
+            onFocusCapture={() =>
+              setIsPaused(true)
+            }
+            onBlurCapture={() =>
+              setIsPaused(false)
+            }
           >
-            <ChevronRight size={22} />
-          </button>
-        </div>
+            {showNavigation ? (
+              <button
+                type="button"
+                className="specialties-carousel__arrow specialties-carousel__arrow--left"
+                onClick={() =>
+                  moveCarousel(-1)
+                }
+                aria-label={
+                  sectionCopy.previous
+                }
+              >
+                <ChevronLeft size={22} />
+              </button>
+            ) : null}
 
+            <div
+              ref={carouselRef}
+              className="specialties-carousel__track"
+              role="region"
+              aria-label={
+                sectionCopy.title
+              }
+            >
+              {visibleStudies.map(
+                (study) => (
+                  <article
+                    className="specialty-card home-study-card"
+                    key={study.id}
+                  >
+                    <div className="specialty-card__icon home-study-card__icon">
+                      <FlaskConical
+                        size={31}
+                        strokeWidth={1.8}
+                        aria-hidden="true"
+                      />
+                    </div>
+
+                    <div className="specialty-card__content home-study-card__content">
+                      <h3>
+                        {getStudyName(
+                          study,
+                        )}
+                      </h3>
+                    </div>
+                  </article>
+                ),
+              )}
+            </div>
+
+            {showNavigation ? (
+              <button
+                type="button"
+                className="specialties-carousel__arrow specialties-carousel__arrow--right"
+                onClick={() =>
+                  moveCarousel(1)
+                }
+                aria-label={
+                  sectionCopy.next
+                }
+              >
+                <ChevronRight
+                  size={22}
+                />
+              </button>
+            ) : null}
+          </div>
+        )}
       </div>
     </section>
   );

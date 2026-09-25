@@ -3,3 +3,17 @@
 !.env.example
 node_modules/
 dist/
+
+# Local development / patch files
+client/backups/
+client/tools/
+06_*.ps1
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Build/dependencies
+node_modules/
+dist/

@@ -1,0 +1,39 @@
+﻿/*
+ * TOKENS DE DISENO
+ * ---------------------------------------------------------------------------
+ * Todos los colores, radios y sombras principales se centralizan aqui.
+ * Si la marca cambia, este es el primer archivo que debe revisarse.
+ */
+
+:root {
+  --color-primary-900: #073b6f;
+  --color-primary-800: #0b477f;
+  --color-primary-700: #075b9e;
+  --color-primary-600: #0670bd;
+  --color-primary-500: #0a82cf;
+
+  --color-accent-700: #078b99;
+  --color-accent-600: #08a1ad;
+  --color-accent-500: #14b7c0;
+
+  --color-text: #10375d;
+  --color-text-soft: #62788e;
+  --color-surface: #ffffff;
+  --color-background: #f6fafc;
+  --color-background-tinted: #edf9fd;
+  --color-border: #d8e7f0;
+
+  --shadow-soft: 0 10px 32px rgba(24, 74, 110, 0.08);
+  --shadow-card: 0 7px 20px rgba(20, 65, 100, 0.08);
+  --shadow-header: 0 2px 12px rgba(21, 64, 96, 0.08);
+
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+
+  --page-width: 1320px;
+  --header-height: 82px;
+
+  --transition-fast: 180ms ease;
+}
+

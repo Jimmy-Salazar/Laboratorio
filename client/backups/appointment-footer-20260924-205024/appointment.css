@@ -1,0 +1,428 @@
+.appointment-page{min-height:100vh;color:#12345b;background:#f7fbff}.appointment-header{background:#fff;border-bottom:1px solid #e7eef6}.appointment-header__inner{width:min(1420px,calc(100% - 48px));min-height:76px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:28px}.appointment-logo{display:inline-flex;align-items:center;gap:10px;color:#0a58b0;text-decoration:none}.appointment-logo__icon{width:48px;height:48px;display:grid;place-items:center;color:#1164cf}.appointment-logo__copy{display:grid;line-height:1}.appointment-logo__copy strong{font-family:Georgia,"Times New Roman",serif;font-size:25px;color:#0a4da3}.appointment-logo__copy strong span{color:#126ae0}.appointment-logo__copy small{margin-top:4px;font-size:9px;font-weight:800;letter-spacing:.13em;color:#1772c8}.appointment-nav{flex:1;display:flex;align-items:center;justify-content:center;gap:clamp(20px,3vw,46px)}.appointment-nav a{position:relative;padding:28px 0 23px;color:#0e2d58;font-size:14px;font-weight:700;text-decoration:none}.appointment-nav__active{color:#065bc7!important}.appointment-nav__active:after{content:"";position:absolute;left:0;right:0;bottom:15px;height:3px;border-radius:999px;background:#0c69e8}.appointment-header__actions{display:flex;align-items:center;gap:18px}.appointment-language{display:inline-flex;padding:3px;border:1px solid #dce8f5;border-radius:999px;background:#f8fbff}.appointment-language button{min-width:44px;min-height:36px;border:0;border-radius:999px;color:#3b587b;background:transparent;font:inherit;font-size:13px;font-weight:700;cursor:pointer}.appointment-language button.is-active{color:#0765d8;background:#e9f3ff}.appointment-contact-button{min-height:46px;display:inline-flex;align-items:center;gap:9px;padding:0 22px;border-radius:999px;color:#fff;background:#064393;font-size:14px;font-weight:700;text-decoration:none}.appointment-hero{overflow:hidden;background:linear-gradient(90deg,#eff8ff 0%,#e2f2ff 48%,#d3e9fa 100%)}.appointment-hero__inner{position:relative;width:min(1420px,calc(100% - 48px));min-height:216px;margin:auto;display:flex;align-items:center}.appointment-hero__copy{position:relative;z-index:2;width:min(720px,62%)}.appointment-hero h1{margin:0;color:#073b80;font-size:clamp(38px,4.1vw,62px);font-weight:800;line-height:1.02;letter-spacing:-.04em}.appointment-hero p{max-width:760px;margin:18px 0 0;color:#42658d;font-size:clamp(17px,1.8vw,23px);line-height:1.42}.appointment-hero__visual{position:absolute;right:8%;width:200px;height:160px;display:grid;place-items:center;border-radius:40px;color:#0872da;background:rgba(255,255,255,.45);transform:rotate(5deg)}.appointment-progress-wrap{background:#fff;border-bottom:1px solid #e8eef5}.appointment-progress{width:min(1240px,calc(100% - 48px));margin:auto;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px;padding:22px 0 25px}.appointment-progress__top{position:relative;min-height:50px;display:flex;align-items:center;gap:14px}.appointment-progress__number,.appointment-progress__icon{position:relative;z-index:2;display:grid;place-items:center;border-radius:50%}.appointment-progress__number{width:42px;height:42px;flex:0 0 42px;color:#7890ab;background:#dfe8f1;font-size:18px;font-weight:700}.appointment-progress__icon{width:50px;height:50px;flex:0 0 50px;color:#37699e;background:#eef5fc}.appointment-progress__line{position:absolute;left:112px;right:-12px;top:24px;height:2px;background:#dbe7f2}.appointment-progress__step.is-active .appointment-progress__number,.appointment-progress__step.is-completed .appointment-progress__number{color:#fff;background:#0d67df}.appointment-progress__step.is-active .appointment-progress__icon,.appointment-progress__step.is-completed .appointment-progress__icon{color:#0d67df;background:#e7f2ff}.appointment-progress__step strong,.appointment-progress__step small{display:block;margin-left:56px}.appointment-progress__step strong{margin-top:2px;color:#0c3267;font-size:15px}.appointment-progress__step small{margin-top:3px;color:#6c85a2;font-size:13px}.appointment-workspace{padding:34px 0 58px}.appointment-workspace__inner{width:min(1420px,calc(100% - 48px));margin:auto;display:grid;grid-template-columns:minmax(0,2.05fr) minmax(320px,.95fr);gap:24px;align-items:start}.appointment-form-card,.appointment-summary-card{border:1px solid #dfe8f1;border-radius:17px;background:#fff;box-shadow:0 8px 28px rgba(35,78,120,.07)}.appointment-form-card{padding:34px}.appointment-card-heading{display:flex;align-items:flex-start;gap:22px;margin-bottom:24px}.appointment-card-heading__icon{width:78px;height:78px;flex:0 0 78px;display:grid;place-items:center;border-radius:50%;color:#0869da;background:linear-gradient(145deg,#edf6ff,#e4f1ff)}.appointment-card-heading h2{margin:4px 0 8px;color:#073b80;font-size:clamp(24px,2.2vw,32px)}.appointment-card-heading p{margin:0;color:#5b7697;font-size:16px;line-height:1.55}.appointment-study-search{min-height:56px;display:flex;align-items:center;gap:12px;padding:0 18px;border:1px solid #b8cee5;border-radius:12px;color:#4d7095}.appointment-study-search select{width:100%;min-height:54px;border:0;outline:0;color:#315b84;background:transparent;font:inherit;font-size:16px}.appointment-study-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:18px}.appointment-study-option{min-height:96px;display:flex;align-items:center;gap:16px;padding:16px 18px;border:1px solid #d9e6f3;border-radius:12px;color:#0b3c78;background:#fff;font:inherit;font-size:15px;font-weight:700;text-align:left;cursor:pointer}.appointment-study-option.is-selected{border-color:#6aaaf1;background:#eef7ff}.appointment-study-option__icon{width:54px;height:54px;flex:0 0 54px;display:grid;place-items:center;border-radius:50%;color:#0f67cc;background:#e9f4ff}.appointment-study-option:nth-child(1) .appointment-study-option__icon,.appointment-study-option:nth-child(3) .appointment-study-option__icon{color:#df4051;background:#fff0f2}.appointment-form-footer{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-top:28px}.appointment-primary-button,.appointment-secondary-button,.appointment-link-button{min-height:48px;display:inline-flex;align-items:center;justify-content:center;gap:9px;border-radius:10px;font:inherit;font-weight:700;cursor:pointer}.appointment-primary-button{min-width:250px;padding:0 28px;border:1px solid #0c63d5;color:#fff;background:linear-gradient(135deg,#0f66dc,#1475f0)}.appointment-primary-button:disabled{opacity:.48;cursor:not-allowed}.appointment-secondary-button{padding:0 20px;border:1px solid #cfddec;color:#27547f;background:#fff}.appointment-link-button{padding:0;border:0;color:#0965cf;background:transparent}.appointment-summary-card{overflow:hidden}.appointment-summary-card__title{display:flex;align-items:center;gap:14px;padding:27px 28px 20px;background:linear-gradient(180deg,#eef7ff,#f8fbff)}.appointment-summary-card__title>span{width:46px;height:46px;display:grid;place-items:center;border-radius:50%;color:#0d6bdc;background:#ddecff}.appointment-summary-card__title h2{margin:0;color:#0b3a79;font-size:22px}.appointment-summary-card__rows{margin:0 12px;border:1px solid #dce7f2;border-radius:13px;overflow:hidden}.appointment-summary-row{display:grid;grid-template-columns:34px minmax(0,1fr);gap:10px;align-items:center;padding:16px 17px;color:#1766b7;border-bottom:1px solid #e5edf6}.appointment-summary-row:last-child{border-bottom:0}.appointment-summary-row div{display:flex;align-items:center;justify-content:space-between;gap:14px}.appointment-summary-row span{color:#35587e;font-size:14px}.appointment-summary-row strong{color:#183d68;font-size:14px;text-align:right}.appointment-status-pill{display:inline-flex;padding:7px 12px;border-radius:999px;color:#8c5a00!important;background:#ffe7a9;font-size:12px!important}.appointment-summary-note{display:flex;gap:13px;margin:14px 12px 12px;padding:18px;border-radius:13px;color:#0d67d8;background:#edf7ff}.appointment-summary-note strong{display:block;margin-bottom:7px;color:#0d57b7;font-size:14px}.appointment-summary-note p{margin:0;color:#587291;font-size:13px;line-height:1.55}.appointment-fields-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.appointment-fields-grid label{display:grid;gap:7px}.appointment-fields-grid label>span,.appointment-field-label{color:#264d76;font-size:13px;font-weight:700}.appointment-fields-grid em{color:#7890a8;font-style:normal;font-weight:400}.appointment-fields-grid input,.appointment-fields-grid select,.appointment-fields-grid textarea{width:100%;border:1px solid #c9d9e9;border-radius:10px;color:#173d67;background:#fff;font:inherit;font-size:16px;outline:none}.appointment-fields-grid input,.appointment-fields-grid select{min-height:48px;padding:0 13px}.appointment-fields-grid textarea{padding:12px 13px;resize:vertical}.appointment-field-full{grid-column:1/-1}.appointment-time-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:8px}.appointment-time-grid button{min-height:46px;border:1px solid #cbdcec;border-radius:10px;color:#315b83;background:#fff;font:inherit;font-weight:700;cursor:pointer}.appointment-time-grid button.is-selected{border-color:#0d6ee2;color:#0a5fc9;background:#edf6ff}.appointment-review{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.appointment-review__row{display:grid;grid-template-columns:40px 1fr;gap:10px;align-items:center;padding:15px;border:1px solid #dce7f2;border-radius:11px;background:#fbfdff}.appointment-review__icon{width:38px;height:38px;display:grid;place-items:center;border-radius:50%;color:#0c68d8;background:#eaf4ff}.appointment-review__row span:last-child{display:grid;gap:3px}.appointment-review__row small{color:#7189a3}.appointment-review__row strong{color:#173d69}.appointment-success{min-height:430px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}.appointment-success__icon{width:94px;height:94px;display:grid;place-items:center;border-radius:50%;color:#0c68d8;background:#eaf4ff}.appointment-success h2{margin:22px 0 8px;color:#093e83;font-size:30px}.appointment-success p{max-width:590px;margin:0 0 26px;color:#5d7895;line-height:1.6}@media(max-width:1160px){.appointment-contact-button span{display:none}.appointment-contact-button{width:46px;padding:0;justify-content:center}.appointment-workspace__inner{grid-template-columns:minmax(0,1.65fr) minmax(300px,.9fr)}.appointment-study-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:940px){.appointment-header__inner{width:min(100% - 28px,900px);flex-wrap:wrap;gap:8px 18px;padding:12px 0}.appointment-nav{order:3;width:100%;justify-content:flex-start;overflow-x:auto}.appointment-nav a{flex:0 0 auto;padding:12px 0 14px}.appointment-nav__active:after{bottom:4px}.appointment-hero__inner,.appointment-progress,.appointment-workspace__inner{width:min(100% - 28px,900px)}.appointment-workspace__inner{grid-template-columns:1fr}.appointment-summary-card{order:-1}}@media(max-width:720px){.appointment-hero__copy{width:100%}.appointment-hero__visual{opacity:.2}.appointment-progress{grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 14px}.appointment-progress__line{display:none}.appointment-progress__step strong,.appointment-progress__step small{margin-left:0}.appointment-form-card{padding:22px}.appointment-card-heading__icon{width:60px;height:60px;flex-basis:60px}.appointment-card-heading{gap:14px}.appointment-study-grid,.appointment-fields-grid,.appointment-review{grid-template-columns:1fr}.appointment-field-full{grid-column:auto}.appointment-time-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.appointment-form-footer{align-items:stretch;flex-direction:column-reverse}.appointment-primary-button,.appointment-secondary-button{width:100%;min-width:0}}
+
+/* ==========================================================================
+   PATCH 04.3A - APPOINTMENT DESKTOP NO PAGE SCROLL
+   --------------------------------------------------------------------------
+   Mantiene el flujo aprobado por pasos.
+   En escritorio ajusta alturas y espacios para que el paso actual completo
+   se vea dentro de la ventana, sin tener que bajar con scroll.
+   En tablet y movil se conserva el scroll normal por accesibilidad.
+   ========================================================================== */
+
+@media (min-width: 941px) {
+
+  .appointment-page {
+    height: 100vh;
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+  }
+
+  .appointment-page > main {
+    flex: 1 1 auto;
+    min-height: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+  }
+
+  /*
+   * Hero mas compacto sin cambiar el diseno visual.
+   */
+  .appointment-hero {
+    flex: 0 0 auto;
+  }
+
+  .appointment-hero__inner {
+    min-height: 118px;
+  }
+
+  .appointment-hero h1 {
+    font-size: clamp(32px, 3vw, 46px);
+  }
+
+  .appointment-hero p {
+    max-width: 720px;
+    margin-top: 9px;
+
+    font-size: 15px;
+    line-height: 1.35;
+  }
+
+  .appointment-hero__tube {
+    width: 82px;
+    height: 82px;
+    border-radius: 23px;
+  }
+
+  .appointment-hero__tube svg {
+    width: 48px;
+    height: 48px;
+  }
+
+  /*
+   * Barra de pasos compacta.
+   */
+  .appointment-progress-wrap {
+    flex: 0 0 auto;
+  }
+
+  .appointment-progress {
+    padding: 10px 0 11px;
+    gap: 16px;
+  }
+
+  .appointment-progress__top {
+    min-height: 38px;
+  }
+
+  .appointment-progress__number {
+    width: 32px;
+    height: 32px;
+    flex-basis: 32px;
+
+    font-size: 14px;
+  }
+
+  .appointment-progress__icon {
+    width: 38px;
+    height: 38px;
+    flex-basis: 38px;
+  }
+
+  .appointment-progress__icon svg {
+    width: 19px;
+    height: 19px;
+  }
+
+  .appointment-progress__line {
+    left: 88px;
+    top: 18px;
+  }
+
+  .appointment-progress__step strong,
+  .appointment-progress__step small {
+    margin-left: 43px;
+  }
+
+  .appointment-progress__step strong {
+    margin-top: 0;
+    font-size: 13px;
+    line-height: 1.2;
+  }
+
+  .appointment-progress__step small {
+    margin-top: 1px;
+    font-size: 11px;
+    line-height: 1.2;
+  }
+
+  /*
+   * Area principal: usa solamente el alto disponible restante.
+   */
+  .appointment-workspace {
+    flex: 1 1 auto;
+    min-height: 0;
+
+    padding: 12px 0 14px;
+
+    overflow: hidden;
+  }
+
+  .appointment-workspace__inner {
+    height: 100%;
+    min-height: 0;
+
+    align-items: stretch;
+  }
+
+  .appointment-form-card,
+  .appointment-summary-card {
+    height: 100%;
+    min-height: 0;
+  }
+
+  .appointment-form-card {
+    padding: 18px 22px;
+    overflow: hidden;
+  }
+
+  .appointment-summary-card {
+    overflow: hidden;
+  }
+
+  /*
+   * Encabezado interno del formulario mas compacto.
+   */
+  .appointment-card-heading {
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+
+  .appointment-card-heading__icon {
+    width: 52px;
+    height: 52px;
+    flex-basis: 52px;
+  }
+
+  .appointment-card-heading__icon svg {
+    width: 27px;
+    height: 27px;
+  }
+
+  .appointment-card-heading h2 {
+    margin: 1px 0 4px;
+    font-size: 23px;
+  }
+
+  .appointment-card-heading p {
+    font-size: 13px;
+    line-height: 1.35;
+  }
+
+  /*
+   * Selector y tarjetas de estudios.
+   */
+  .appointment-study-search {
+    min-height: 44px;
+    padding-inline: 14px;
+  }
+
+  .appointment-study-search select {
+    min-height: 42px;
+    font-size: 14px;
+  }
+
+  .appointment-study-grid {
+    gap: 9px;
+    margin-top: 10px;
+  }
+
+  .appointment-study-option {
+    min-height: 68px;
+    gap: 10px;
+    padding: 10px 12px;
+
+    font-size: 12px;
+  }
+
+  .appointment-study-option__icon {
+    width: 40px;
+    height: 40px;
+    flex-basis: 40px;
+  }
+
+  .appointment-study-option__icon svg {
+    width: 23px;
+    height: 23px;
+  }
+
+  /*
+   * Campos de fecha, paciente y horarios.
+   */
+  .appointment-fields-grid {
+    gap: 11px 14px;
+  }
+
+  .appointment-fields-grid label {
+    gap: 4px;
+  }
+
+  .appointment-fields-grid label > span,
+  .appointment-field-label {
+    font-size: 12px;
+  }
+
+  .appointment-fields-grid input,
+  .appointment-fields-grid select {
+    min-height: 40px;
+    padding-inline: 11px;
+    font-size: 14px;
+  }
+
+  .appointment-fields-grid textarea {
+    min-height: 68px;
+    max-height: 82px;
+    padding: 9px 11px;
+
+    font-size: 14px;
+  }
+
+  .appointment-time-grid {
+    gap: 7px;
+    margin-top: 5px;
+  }
+
+  .appointment-time-grid button {
+    min-height: 38px;
+    font-size: 13px;
+  }
+
+  /*
+   * Pie de acciones del formulario.
+   */
+  .appointment-form-footer {
+    margin-top: 14px;
+  }
+
+  .appointment-primary-button,
+  .appointment-secondary-button,
+  .appointment-link-button {
+    min-height: 42px;
+    font-size: 13px;
+  }
+
+  .appointment-primary-button {
+    min-width: 210px;
+    padding-inline: 22px;
+  }
+
+  /*
+   * Resumen lateral compacto.
+   */
+  .appointment-summary-card__title {
+    padding: 17px 18px 13px;
+  }
+
+  .appointment-summary-card__title > span {
+    width: 38px;
+    height: 38px;
+  }
+
+  .appointment-summary-card__title h2 {
+    font-size: 18px;
+  }
+
+  .appointment-summary-card__rows {
+    margin-inline: 9px;
+  }
+
+  .appointment-summary-row {
+    grid-template-columns: 28px minmax(0, 1fr);
+    gap: 7px;
+
+    padding: 10px 12px;
+  }
+
+  .appointment-summary-row svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .appointment-summary-row span {
+    font-size: 11px;
+  }
+
+  .appointment-summary-row strong {
+    font-size: 12px;
+  }
+
+  .appointment-status-pill {
+    padding: 5px 8px;
+    font-size: 10px !important;
+  }
+
+  .appointment-summary-note {
+    gap: 8px;
+
+    margin: 9px;
+    padding: 11px;
+  }
+
+  .appointment-summary-note svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .appointment-summary-note strong {
+    margin-bottom: 3px;
+    font-size: 12px;
+  }
+
+  .appointment-summary-note p {
+    font-size: 11px;
+    line-height: 1.35;
+  }
+
+  /*
+   * Para esta pagina no mostramos el footer en escritorio.
+   * Asi el formulario completo permanece dentro del viewport.
+   * La cabecera global se mantiene exactamente igual.
+   */
+  .appointment-page > footer,
+  .appointment-page .site-footer {
+    display: none !important;
+  }
+}
+
+/*
+ * En pantallas bajas reducimos aun mas el Hero para conservar espacio.
+ */
+@media (min-width: 941px) and (max-height: 760px) {
+
+  .appointment-hero__inner {
+    min-height: 92px;
+  }
+
+  .appointment-hero h1 {
+    font-size: 34px;
+  }
+
+  .appointment-hero p {
+    margin-top: 5px;
+    font-size: 13px;
+  }
+
+  .appointment-hero__visual {
+    opacity: 0.55;
+  }
+
+  .appointment-progress {
+    padding: 6px 0 7px;
+  }
+
+  .appointment-progress__step small {
+    display: none;
+  }
+
+  .appointment-workspace {
+    padding: 8px 0 10px;
+  }
+
+  .appointment-form-card {
+    padding: 14px 18px;
+  }
+
+  .appointment-card-heading {
+    margin-bottom: 10px;
+  }
+
+  .appointment-study-option {
+    min-height: 60px;
+  }
+
+  .appointment-summary-note {
+    padding: 8px 10px;
+  }
+}
+
+/*
+ * Tablet y movil:
+ * se permite scroll vertical normal porque es la opcion usable y segura.
+ */
+@media (max-width: 940px) {
+
+  .appointment-page {
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+  }
+
+  .appointment-page > main,
+  .appointment-workspace {
+    overflow: visible;
+  }
+}

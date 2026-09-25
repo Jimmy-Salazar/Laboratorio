@@ -1,6 +1,6 @@
 ﻿import { useState } from "react";
 import {
-  FlaskConical,
+
   Home,
   MapPin,
   Microscope,
@@ -8,11 +8,14 @@ import {
   FileText,
   Menu,
   X,
+
+  Sparkles,
 } from "lucide-react";
 
 import LanguageSwitcher from "../common/LanguageSwitcher";
 import { useLanguage } from "../../context/LanguageContext";
 
+import HighlightsPopup from "../home/HighlightsPopup";
 /*
  * HEADER PRINCIPAL
  * ---------------------------------------------------------------------------
@@ -31,11 +34,20 @@ import { useLanguage } from "../../context/LanguageContext";
  * relacionadas con Resultados.
  */
 
+/* PATCH_06_23_BRAND_HEADER */
+
+/* PATCH_06_28_1_HIGHLIGHTS_MENU_MODAL */
+
+/* PATCH_06_28_2_RESTORE_TOP_MENU */
+
+/* PATCH_06_30_DIRECT_HIGHLIGHTS_POPUP */
+
 export default function SiteHeader() {
-  const { content } = useLanguage();
+  const { content, language } = useLanguage();
 
   // Controla la apertura y cierre del menu en dispositivos moviles.
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [highlightsOpen, setHighlightsOpen] = useState(false);
 
   /*
    * Navegacion principal.
@@ -46,23 +58,27 @@ export default function SiteHeader() {
   const navItems = [
     {
       label: content.navigation.home,
-      href: "/#home",
+      href: "#home",
       icon: Home,
     },
     {
       label: content.navigation.branches,
-      href: "/#branches",
+      href: "#branches",
       icon: MapPin,
     },
     {
       label: content.navigation.specialties,
-      href: "/#specialties",
+      href: "#specialties",
       icon: Microscope,
     },
     {
-      label: content.navigation.promotions,
-      href: "/#promotions",
-      icon: Tag,
+      label:
+        language === "en"
+          ? "Highlights"
+          : "Destacados",
+      href: "#highlights",
+      icon: Sparkles,
+      modal: true,
     },
     {
       label: content.navigation.results,
@@ -86,26 +102,16 @@ export default function SiteHeader() {
             MARCA
             ===================================================== */}
         <a
-          className="brand"
-          href="/#home"
+          className="brand brand--logo"
+          href="#home"
           onClick={closeMobileMenu}
-          aria-label="Dr. Chasi"
+          aria-label="Laboratorio Clinico Dr. Milton Chasi"
         >
-          <FlaskConical
-            size={34}
-            strokeWidth={2.1}
-            aria-hidden="true"
+          <img
+            className="brand-logo brand-logo--header"
+            src="/brand/dr-milton-chasi-logo.png"
+            alt="Laboratorio Clinico Dr. Milton Chasi"
           />
-
-          <span className="brand__text">
-            <strong>
-              Dr. <span>Chasi</span>
-            </strong>
-
-            <small>
-              Laboratorio Clínico
-            </small>
-          </span>
         </a>
 
         {/* =====================================================
@@ -113,9 +119,7 @@ export default function SiteHeader() {
             ===================================================== */}
         <nav
           className={`main-navigation ${
-            mobileMenuOpen
-              ? "main-navigation--open"
-              : ""
+            mobileMenuOpen ? "main-navigation--open" : ""
           }`}
           aria-label="Main navigation"
         >
@@ -128,16 +132,26 @@ export default function SiteHeader() {
               <a
                 key={href}
                 href={href}
-                onClick={closeMobileMenu}
+                onClick={(event) => {
+                  if (
+                    href ===
+                    "#highlights"
+                  ) {
+                    event.preventDefault();
+
+                    setHighlightsOpen(
+                      true,
+                    );
+                  }
+
+                  closeMobileMenu();
+                }}
               >
                 <Icon
                   size={16}
                   aria-hidden="true"
                 />
-
-                <span>
-                  {label}
-                </span>
+                <span>{label}</span>
               </a>
             ),
           )}
@@ -171,6 +185,14 @@ export default function SiteHeader() {
 
         </div>
       </div>
+      <HighlightsPopup
+        open={highlightsOpen}
+        onClose={() =>
+          setHighlightsOpen(
+            false,
+          )
+        }
+      />
     </header>
   );
 }

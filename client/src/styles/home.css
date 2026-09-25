@@ -2044,3 +2044,635 @@
     min-height: 150px;
   }
 }
+/* ==========================================================================
+   PATCH 06.23 - DR MILTON CHASI PUBLIC LOGO
+   ========================================================================== */
+
+.brand--logo {
+  min-width: 118px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+
+  text-decoration: none;
+}
+
+.brand-logo {
+  display: block;
+
+  width: auto;
+  max-width: 100%;
+
+  object-fit: contain;
+}
+
+.brand-logo--header {
+  width: 122px;
+  height: auto;
+
+  border-radius: 6px;
+}
+
+.brand--footer-logo {
+  display: block;
+}
+
+.brand-logo--footer {
+  width: 165px;
+  height: auto;
+
+  border-radius: 7px;
+
+  background: #ffffff;
+}
+
+@media (max-width: 900px) {
+  .brand-logo--header {
+    width: 108px;
+  }
+}
+
+@media (max-width: 560px) {
+  .brand--logo {
+    min-width: 88px;
+  }
+
+  .brand-logo--header {
+    width: 94px;
+  }
+
+  .brand-logo--footer {
+    width: 145px;
+  }
+}
+/* ==========================================================================
+   PATCH 06.25 - FOOTER DARK LOGO
+   ========================================================================== */
+
+.brand--footer-logo {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.brand-logo--footer {
+  display: block;
+
+  width: 190px;
+  max-width: 100%;
+  height: auto;
+
+  border-radius: 0;
+
+  background: transparent;
+
+  object-fit: contain;
+}
+
+@media (max-width: 700px) {
+  .brand--footer-logo {
+    justify-content: center;
+  }
+
+  .brand-logo--footer {
+    width: 175px;
+  }
+}
+/* ==========================================================================
+   PATCH 06.26 - HOME DESTACADOS
+   ========================================================================== */
+
+.home-highlights-section {
+  position: relative;
+
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      circle at 8% 0%,
+      rgba(24, 164, 175, 0.08),
+      transparent 31%
+    ),
+    linear-gradient(
+      180deg,
+      #ffffff 0%,
+      #f7fbfe 100%
+    );
+}
+
+.home-highlights-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(
+      4,
+      minmax(0, 1fr)
+    );
+  gap: 18px;
+}
+
+.home-highlight-card {
+  min-width: 0;
+
+  overflow: hidden;
+
+  border: 1px solid #dde8f1;
+  border-radius: 16px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 12px 32px
+    rgba(24, 72, 111, 0.08);
+
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    border-color 180ms ease;
+}
+
+.home-highlight-card:hover {
+  transform:
+    translateY(-4px);
+
+  border-color:
+    #b9d3e7;
+
+  box-shadow:
+    0 18px 38px
+    rgba(24, 72, 111, 0.13);
+}
+
+.home-highlight-card__preview {
+  position: relative;
+
+  width: 100%;
+
+  display: block;
+
+  padding: 0;
+
+  overflow: hidden;
+
+  border: 0;
+
+  background:
+    #edf5fa;
+
+  cursor: zoom-in;
+}
+
+.home-highlight-card__preview img {
+  display: block;
+
+  width: 100%;
+  aspect-ratio: 2 / 3;
+
+  object-fit: cover;
+  object-position: center top;
+}
+
+.home-highlight-card__overlay {
+  position: absolute;
+  left: 50%;
+  bottom: 12px;
+
+  min-height: 34px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  padding:
+    0 12px;
+
+  border:
+    1px solid
+    rgba(
+      255,
+      255,
+      255,
+      0.42
+    );
+  border-radius: 999px;
+
+  color: #ffffff;
+  background:
+    rgba(
+      5,
+      55,
+      104,
+      0.86
+    );
+
+  box-shadow:
+    0 8px 22px
+    rgba(
+      7,
+      38,
+      72,
+      0.2
+    );
+
+  font-size: 10px;
+  font-weight: 800;
+
+  opacity: 0;
+  transform:
+    translate(
+      -50%,
+      7px
+    );
+
+  transition:
+    opacity 160ms ease,
+    transform 160ms ease;
+
+  pointer-events: none;
+}
+
+.home-highlight-card:hover
+  .home-highlight-card__overlay,
+.home-highlight-card__preview:focus-visible
+  .home-highlight-card__overlay {
+  opacity: 1;
+  transform:
+    translate(
+      -50%,
+      0
+    );
+}
+
+.home-highlight-card__copy {
+  min-height: 59px;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding:
+    11px 13px;
+}
+
+.home-highlight-card__copy > span {
+  min-width: 30px;
+  height: 30px;
+
+  display: grid;
+  place-items: center;
+
+  flex: 0 0 auto;
+
+  border-radius: 9px;
+
+  color: #0b6b82;
+  background:
+    #e8f7f7;
+
+  font-size: 9px;
+  font-weight: 900;
+}
+
+.home-highlight-card__copy strong {
+  min-width: 0;
+
+  color: #194f7c;
+
+  font-size: 11px;
+  line-height: 1.25;
+}
+
+.home-highlight-modal {
+  position: fixed;
+  z-index: 9999;
+  inset: 0;
+
+  display: grid;
+  place-items: center;
+
+  padding: 24px;
+
+  background:
+    rgba(
+      3,
+      25,
+      48,
+      0.78
+    );
+
+  backdrop-filter:
+    blur(5px);
+}
+
+.home-highlight-modal__dialog {
+  position: relative;
+
+  width:
+    min(
+      620px,
+      94vw
+    );
+  max-height: 92vh;
+
+  display: grid;
+  place-items: center;
+}
+
+.home-highlight-modal__dialog img {
+  display: block;
+
+  width: auto;
+  max-width: 100%;
+  max-height: 90vh;
+
+  border-radius: 12px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 24px 70px
+    rgba(
+      0,
+      0,
+      0,
+      0.38
+    );
+
+  object-fit: contain;
+}
+
+.home-highlight-modal__close {
+  position: absolute;
+  z-index: 2;
+  top: 9px;
+  right: 9px;
+
+  width: 38px;
+  height: 38px;
+
+  display: grid;
+  place-items: center;
+
+  border:
+    1px solid
+    rgba(
+      255,
+      255,
+      255,
+      0.45
+    );
+  border-radius: 50%;
+
+  color: #ffffff;
+  background:
+    rgba(
+      5,
+      49,
+      89,
+      0.9
+    );
+
+  cursor: pointer;
+}
+
+@media (max-width: 1050px) {
+  .home-highlights-grid {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0, 1fr)
+      );
+  }
+}
+
+@media (max-width: 620px) {
+  .home-highlights-grid {
+    grid-template-columns:
+      1fr;
+    gap: 14px;
+  }
+
+  .home-highlight-card {
+    width:
+      min(
+        420px,
+        100%
+      );
+
+    margin-inline: auto;
+  }
+
+  .home-highlight-card__overlay {
+    opacity: 1;
+    transform:
+      translate(
+        -50%,
+        0
+      );
+  }
+
+  .home-highlight-modal {
+    padding: 10px;
+  }
+}
+/* ==========================================================================
+   PATCH 06.27 - DESTACADOS CAROUSEL
+   ========================================================================== */
+
+.home-highlights-heading-row {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1fr)
+    auto;
+  gap: 14px;
+  align-items: end;
+}
+
+.home-highlights-controls {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  margin-bottom: 18px;
+}
+
+.home-highlights-controls button {
+  width: 38px;
+  height: 38px;
+
+  display: grid;
+  place-items: center;
+
+  border: 1px solid #d2e2ed;
+  border-radius: 50%;
+
+  color: #205d8a;
+  background: #ffffff;
+
+  box-shadow:
+    0 7px 18px
+    rgba(27, 73, 110, 0.08);
+
+  cursor: pointer;
+
+  transition:
+    transform 150ms ease,
+    border-color 150ms ease,
+    background 150ms ease;
+}
+
+.home-highlights-controls button:hover {
+  transform:
+    translateY(-1px);
+
+  border-color: #86bbd7;
+
+  background: #f3faff;
+}
+
+.home-highlights-carousel {
+  min-width: 0;
+}
+
+.home-highlights-grid--carousel {
+  grid-template-columns:
+    repeat(
+      var(
+        --highlights-visible,
+        3
+      ),
+      minmax(0, 1fr)
+    );
+
+  animation:
+    highlights-fade-in
+    320ms ease;
+}
+
+@keyframes highlights-fade-in {
+  from {
+    opacity: 0.6;
+    transform:
+      translateX(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform:
+      translateX(0);
+  }
+}
+
+.home-highlights-dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+
+  margin-top: 15px;
+}
+
+.home-highlights-dots button {
+  width: 8px;
+  height: 8px;
+
+  padding: 0;
+
+  border: 0;
+  border-radius: 999px;
+
+  background: #bdd1df;
+
+  cursor: pointer;
+
+  transition:
+    width 160ms ease,
+    background 160ms ease;
+}
+
+.home-highlights-dots button.is-active {
+  width: 24px;
+
+  background: #0b8fa0;
+}
+
+@media (max-width: 620px) {
+  .home-highlights-heading-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .home-highlights-controls {
+    justify-content: flex-end;
+
+    margin-top: -7px;
+    margin-bottom: 12px;
+  }
+
+  .home-highlights-controls button {
+    width: 36px;
+    height: 36px;
+  }
+}
+/* ==========================================================================
+   PATCH 06.31 - DESTACADOS SMOOTH SLIDE
+   ========================================================================== */
+
+.home-highlights-carousel {
+  overflow: hidden;
+}
+
+.home-highlights-grid--carousel {
+  animation:
+    home-highlights-smooth-slide
+    650ms
+    cubic-bezier(
+      0.22,
+      0.61,
+      0.36,
+      1
+    )
+    both;
+
+  will-change:
+    transform,
+    opacity;
+}
+
+@keyframes home-highlights-smooth-slide {
+  0% {
+    opacity: 0.3;
+
+    transform:
+      translate3d(
+        52px,
+        0,
+        0
+      );
+  }
+
+  55% {
+    opacity: 0.88;
+  }
+
+  100% {
+    opacity: 1;
+
+    transform:
+      translate3d(
+        0,
+        0,
+        0
+      );
+  }
+}
+
+@media (
+  prefers-reduced-motion:
+    reduce
+) {
+  .home-highlights-grid--carousel {
+    animation: none;
+  }
+}

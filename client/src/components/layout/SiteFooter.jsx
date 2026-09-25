@@ -1,5 +1,5 @@
 ﻿import {
-  FlaskConical,
+
   Phone,
   Mail,
   MapPin,
@@ -20,6 +20,10 @@ import { useLanguage } from "../../context/LanguageContext";
  * La marca visible del proyecto ahora es Dr. Chasis.
  */
 
+/* PATCH_06_23_BRAND_FOOTER */
+
+/* PATCH_06_25_FOOTER_LOGO */
+
 export default function SiteFooter() {
   const { content } = useLanguage();
   const currentYear = new Date().getFullYear();
@@ -28,15 +32,12 @@ export default function SiteFooter() {
     <footer className="site-footer">
       <div className="page-container site-footer__grid">
         <div className="footer-brand">
-          <div className="brand brand--footer">
-            <FlaskConical size={34} aria-hidden="true" />
-
-            <span className="brand__text">
-              <strong>
-                Dr. <span>Chasi</span>
-              </strong>
-              <small>Laboratorio Clínico</small>
-            </span>
+          <div className="brand brand--footer brand--footer-logo">
+            <img
+              className="brand-logo brand-logo--footer"
+              src="/brand/dr-milton-chasi-logo-footer.png"
+              alt="Laboratorio Clinico Dr. Milton Chasi"
+            />
           </div>
         </div>
 

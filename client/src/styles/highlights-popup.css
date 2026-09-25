@@ -1,0 +1,314 @@
+.highlights-popup {
+  position: fixed;
+  z-index: 2147483000;
+  inset: 0;
+
+  display: grid;
+  place-items: center;
+
+  padding: 20px;
+
+  background:
+    rgba(
+      2,
+      22,
+      43,
+      0.84
+    );
+
+  backdrop-filter:
+    blur(7px);
+}
+
+.highlights-popup__dialog {
+  width:
+    min(
+      720px,
+      96vw
+    );
+  max-height: 95vh;
+
+  display: grid;
+  grid-template-rows:
+    auto
+    minmax(0, 1fr)
+    auto;
+
+  overflow: hidden;
+
+  border:
+    1px solid
+    rgba(
+      255,
+      255,
+      255,
+      0.22
+    );
+  border-radius: 18px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 32px 95px
+    rgba(
+      0,
+      0,
+      0,
+      0.46
+    );
+}
+
+.highlights-popup__header {
+  min-height: 64px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+
+  padding:
+    11px 14px
+    11px 18px;
+
+  border-bottom:
+    1px solid #e0eaf1;
+
+  background:
+    linear-gradient(
+      135deg,
+      #f9fdff,
+      #edf8fb
+    );
+}
+
+.highlights-popup__header > div {
+  min-width: 0;
+
+  display: grid;
+  gap: 2px;
+}
+
+.highlights-popup__header span {
+  color: #0b8f9d;
+
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.highlights-popup__header strong {
+  overflow: hidden;
+
+  color: #174f7d;
+
+  font-size: 16px;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.highlights-popup__close {
+  width: 39px;
+  height: 39px;
+
+  display: grid;
+  place-items: center;
+
+  flex: 0 0 auto;
+
+  border: 0;
+  border-radius: 50%;
+
+  color: #ffffff;
+  background: #0b5f93;
+
+  cursor: pointer;
+}
+
+.highlights-popup__stage {
+  position: relative;
+
+  min-height: 0;
+
+  display: grid;
+  place-items: center;
+
+  padding: 14px 58px;
+
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      circle at center,
+      #ffffff,
+      #edf6fb
+    );
+}
+
+.highlights-popup__stage img {
+  display: block;
+
+  width: auto;
+  max-width: 100%;
+  max-height: 73vh;
+
+  border-radius: 10px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 16px 45px
+    rgba(
+      17,
+      61,
+      96,
+      0.17
+    );
+
+  object-fit: contain;
+
+  animation:
+    highlights-popup-in
+    260ms ease;
+}
+
+@keyframes highlights-popup-in {
+  from {
+    opacity: 0.45;
+    transform:
+      scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+    transform:
+      scale(1);
+  }
+}
+
+.highlights-popup__arrow {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+
+  width: 43px;
+  height: 43px;
+
+  display: grid;
+  place-items: center;
+
+  border:
+    1px solid #cbdfe9;
+  border-radius: 50%;
+
+  color: #175d8b;
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.96
+    );
+
+  box-shadow:
+    0 8px 24px
+    rgba(
+      17,
+      61,
+      96,
+      0.14
+    );
+
+  cursor: pointer;
+
+  transform:
+    translateY(-50%);
+}
+
+.highlights-popup__arrow--left {
+  left: 10px;
+}
+
+.highlights-popup__arrow--right {
+  right: 10px;
+}
+
+.highlights-popup__dots {
+  min-height: 46px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  padding: 9px;
+
+  border-top:
+    1px solid #e5edf2;
+
+  background: #ffffff;
+}
+
+.highlights-popup__dots button {
+  width: 9px;
+  height: 9px;
+
+  padding: 0;
+
+  border: 0;
+  border-radius: 999px;
+
+  background: #bfd2df;
+
+  cursor: pointer;
+
+  transition:
+    width 160ms ease,
+    background 160ms ease;
+}
+
+.highlights-popup__dots button.is-active {
+  width: 27px;
+
+  background: #0b909e;
+}
+
+@media (max-width: 620px) {
+  .highlights-popup {
+    padding: 8px;
+  }
+
+  .highlights-popup__dialog {
+    width: 100%;
+    max-height: 97vh;
+
+    border-radius: 13px;
+  }
+
+  .highlights-popup__stage {
+    padding:
+      10px 42px;
+  }
+
+  .highlights-popup__stage img {
+    max-height: 77vh;
+  }
+
+  .highlights-popup__arrow {
+    width: 36px;
+    height: 36px;
+  }
+
+  .highlights-popup__arrow--left {
+    left: 4px;
+  }
+
+  .highlights-popup__arrow--right {
+    right: 4px;
+  }
+
+  .highlights-popup__header strong {
+    font-size: 13px;
+  }
+}

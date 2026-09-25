@@ -1,4 +1,4 @@
-﻿import {
+import {
   FileText,
   CalendarDays,
   ShieldCheck,
@@ -46,14 +46,6 @@ export default function HeroSection() {
               <FileText size={17} aria-hidden="true" />
               {content.hero.primaryAction}
               <span aria-hidden="true">›</span>
-            </Link>
-
-            <Link
-              className="button button--secondary"
-              to="/agendar"
-            >
-              <CalendarDays size={17} aria-hidden="true" />
-              {content.hero.secondaryAction}
             </Link>
           </div>
 

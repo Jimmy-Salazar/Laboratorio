@@ -6,7 +6,7 @@ import {
 import {
   Eye,
   EyeOff,
-  FlaskConical,
+
   IdCard,
   LockKeyhole,
   ShieldCheck,
@@ -14,6 +14,8 @@ import {
 
 import { useAdminAuth } from "../context/AdminAuthContext";
 import "../styles/admin.css";
+
+/* PATCH_06_23_BRAND_ADMIN_LOGIN */
 
 export default function AdminLoginPage() {
   const navigate = useNavigate();
@@ -74,17 +76,12 @@ export default function AdminLoginPage() {
   return (
     <div className="admin-login-page">
       <div className="admin-login-card">
-        <div className="admin-login-brand">
-          <span>
-            <FlaskConical size={39} />
-          </span>
-
-          <div>
-            <strong>
-              Dr. <em>Chasi</em>
-            </strong>
-            <small>LABORATORIO CLINICO</small>
-          </div>
+        <div className="admin-login-brand admin-login-brand--logo">
+          <img
+            className="admin-login-brand-logo"
+            src="/brand/dr-milton-chasi-logo.png"
+            alt="Laboratorio Clinico Dr. Milton Chasi"
+          />
         </div>
 
         <div className="admin-login-heading">

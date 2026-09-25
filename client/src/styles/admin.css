@@ -4957,3 +4957,78 @@ td:nth-child(2) {
 .admin-result-security-card {
   display: none !important;
 }
+/* ==========================================================================
+   PATCH 06.23 - DR MILTON CHASI ADMIN LOGO
+   ========================================================================== */
+
+.admin-brand {
+  min-height: 112px;
+
+  align-items: flex-start;
+}
+
+.admin-brand__logo-block {
+  min-width: 0;
+
+  display: grid;
+  gap: 5px;
+
+  flex: 1 1 auto;
+}
+
+.admin-brand-logo {
+  display: block;
+
+  width: 150px;
+  max-width: 100%;
+  height: auto;
+
+  border-radius: 8px;
+
+  background: #ffffff;
+
+  object-fit: contain;
+}
+
+.admin-brand__logo-block small {
+  margin-top: 1px;
+
+  color: #a9cbea;
+
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.admin-login-brand--logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 23px;
+}
+
+.admin-login-brand-logo {
+  display: block;
+
+  width: min(245px, 88%);
+  height: auto;
+
+  border-radius: 10px;
+
+  background: #ffffff;
+
+  object-fit: contain;
+}
+
+@media (max-width: 820px) {
+  .admin-brand-logo {
+    width: 145px;
+  }
+}
+
+@media (max-width: 520px) {
+  .admin-login-brand-logo {
+    width: min(220px, 92%);
+  }
+}

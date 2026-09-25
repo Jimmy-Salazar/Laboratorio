@@ -22,8 +22,8 @@ export const siteContent = {
 
     hero: {
       eyebrow: "TU SALUD, NUESTRA PRIORIDAD",
-      titlePrefix: "Bienvenido a",
-      brandName: "Laboratorio Clínico Dr. Chasi",
+      titlePrefix: "Bienvenidos a",
+      brandName: "Laboratorio Cl\u00ednico Dr. Milton Chasi",
       description:
         "Estudios de laboratorio confiables, con tecnología de vanguardia y resultados digitales al alcance de tus manos.",
       primaryAction: "Ver resultados",
@@ -310,7 +310,7 @@ export const siteContent = {
     hero: {
       eyebrow: "YOUR HEALTH, OUR PRIORITY",
       titlePrefix: "Welcome to",
-      brandName: "Dr. Chasi Clinical Laboratory",
+      brandName: "Dr. Milton Chasi Clinical Laboratory",
       description:
         "Reliable laboratory testing, advanced technology and digital results available at your fingertips.",
       primaryAction: "View results",

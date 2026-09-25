@@ -112,6 +112,8 @@ function NavigationLink({
   );
 }
 
+/* PATCH_06_23_BRAND_ADMIN_LAYOUT */
+
 export default function AdminLayout() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -183,17 +185,15 @@ export default function AdminLayout() {
           .join(" ")}
       >
         <div className="admin-brand">
-          <span className="admin-brand__icon">
-            <FlaskConical size={31} />
-          </span>
-
-          <div>
-            <strong>
-              Dr. <span>Chasi</span>
-            </strong>
+          <div className="admin-brand__logo-block">
+            <img
+              className="admin-brand-logo"
+              src="/brand/dr-milton-chasi-logo.png"
+              alt="Laboratorio Clinico Dr. Milton Chasi"
+            />
 
             <small>
-              {isMaster
+              {profile?.role === "master"
                 ? "ADMIN MASTER"
                 : "ADMINISTRACION"}
             </small>

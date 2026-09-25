@@ -4,6 +4,7 @@ import HeroSection from "../components/home/HeroSection";
 import HomeCarousel from "../components/home/HomeCarousel";
 import BranchesSection from "../components/home/BranchesSection";
 import SpecialtiesSection from "../components/home/SpecialtiesSection";
+import HighlightsSection from "../components/home/HighlightsSection";
 /*
  * HOME PAGE
  * ---------------------------------------------------------------------------
@@ -21,6 +22,7 @@ export default function HomePage() {
         <HeroSection />
         <HomeCarousel />
         <SpecialtiesSection />
+        <HighlightsSection />
         <BranchesSection />
 </main>
 

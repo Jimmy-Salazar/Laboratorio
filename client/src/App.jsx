@@ -3,6 +3,13 @@ import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import AppointmentPage from "./pages/AppointmentPage";
 import ResultsPage from "./pages/ResultsPage";
+import AdminLayout from "./components/admin/AdminLayout";
+import AdminLoginPage from "./pages/AdminLoginPage";
+import AdminDashboardPage from "./pages/AdminDashboardPage";
+import { AdminAuthProvider } from "./context/AdminAuthContext";
+import { RequireAdmin, RequireRole } from "./components/admin/RequireAdmin";
+import AdminHomeRedirect from "./components/admin/AdminHomeRedirect";
+import MasterAdminsPage from "./pages/MasterAdminsPage";
 
 /*
  * MAPA DE RUTAS DEL FRONTEND
@@ -22,7 +29,54 @@ export default function App() {
       <Route path="/resultados" element={<ResultsPage />} />
       <Route path="*" element={<Navigate to="/" replace />} />
             <Route path="/agendar" element={<AppointmentPage />} />
-      </Routes>
+      
+      <Route
+        path="/admin/login"
+        element={
+          <AdminAuthProvider>
+            <AdminLoginPage />
+          </AdminAuthProvider>
+        }
+      />
+
+      <Route
+        path="/admin"
+        element={
+          <AdminAuthProvider>
+            <RequireAdmin>
+              <AdminLayout />
+            </RequireAdmin>
+          </AdminAuthProvider>
+        }
+      >
+        <Route
+          index
+          element={<AdminHomeRedirect />}
+        />
+
+        <Route
+          path="dashboard"
+          element={
+            <RequireRole
+              roles={["admin"]}
+            >
+              <AdminDashboardPage />
+            </RequireRole>
+          }
+        />
+
+        <Route
+          path="administradores"
+          element={
+            <RequireRole
+              roles={["master"]}
+            >
+              <MasterAdminsPage />
+            </RequireRole>
+          }
+        />
+      </Route>
+    </Routes>
   );
 }
 

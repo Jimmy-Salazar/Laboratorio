@@ -11,6 +11,9 @@ import { supabase } from "../lib/supabase";
 
 const AdminAuthContext = createContext(null);
 
+const ADMIN_IDLE_TIMEOUT_MS =
+  20 * 60 * 1000;
+
 function normalizeIdentification(value) {
   return String(value ?? "").replace(/\D/g, "");
 }
@@ -213,6 +216,95 @@ export function AdminAuthProvider({ children }) {
     setSession(null);
     setProfile(null);
   }, []);
+
+  /* ADMIN_IDLE_TIMEOUT_EFFECT_0635 */
+  useEffect(() => {
+    if (!session) {
+      return undefined;
+    }
+
+    let timeoutId = null;
+
+    const expireSession = () => {
+      void logout();
+    };
+
+    const resetTimeout = () => {
+      if (timeoutId) {
+        window.clearTimeout(
+          timeoutId,
+        );
+      }
+
+      timeoutId =
+        window.setTimeout(
+          expireSession,
+          ADMIN_IDLE_TIMEOUT_MS,
+        );
+    };
+
+    const activityEvents = [
+      "pointerdown",
+      "keydown",
+      "touchstart",
+      "scroll",
+    ];
+
+    for (
+      const eventName of
+      activityEvents
+    ) {
+      window.addEventListener(
+        eventName,
+        resetTimeout,
+        {
+          passive: true,
+        },
+      );
+    }
+
+    const handleVisibility = () => {
+      if (
+        document.visibilityState ===
+        "visible"
+      ) {
+        resetTimeout();
+      }
+    };
+
+    document.addEventListener(
+      "visibilitychange",
+      handleVisibility,
+    );
+
+    resetTimeout();
+
+    return () => {
+      if (timeoutId) {
+        window.clearTimeout(
+          timeoutId,
+        );
+      }
+
+      for (
+        const eventName of
+        activityEvents
+      ) {
+        window.removeEventListener(
+          eventName,
+          resetTimeout,
+        );
+      }
+
+      document.removeEventListener(
+        "visibilitychange",
+        handleVisibility,
+      );
+    };
+  }, [
+    session,
+    logout,
+  ]);
 
   const value = useMemo(
     () => ({

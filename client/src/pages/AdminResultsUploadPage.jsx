@@ -133,6 +133,11 @@ export default function AdminResultsUploadPage() {
       profile?.role,
     );
 
+  const canRelease =
+    ["admin", "secretary", "laboratorist"].includes(
+      profile?.role,
+    );
+
   const [studies, setStudies] =
     useState([]);
   const [patientSearch, setPatientSearch] =
@@ -591,6 +596,7 @@ export default function AdminResultsUploadPage() {
       "success",
     );
 
+    clearPatient();
     setStudyId("");
     setResultDate(
       todayInGuayaquil(),
@@ -660,7 +666,7 @@ export default function AdminResultsUploadPage() {
     result,
   ) {
     if (
-      !canManage ||
+      !canRelease ||
       busyResultId
     ) {
       return;
@@ -669,39 +675,133 @@ export default function AdminResultsUploadPage() {
     setBusyResultId(
       result.id,
     );
+
     setMessage("");
 
     const {
-      error,
-    } = await supabase.rpc(
-      "release_patient_result",
-      {
-        p_result_id:
-          result.id,
-      },
-    );
+      error: releaseError,
+    } =
+      await supabase.rpc(
+        "release_patient_result",
+        {
+          p_result_id:
+            result.id,
+        },
+      );
+
+    if (releaseError) {
+      console.error(
+        releaseError,
+      );
+
+      setBusyResultId(
+        null,
+      );
+
+      setMessage(
+        "No fue posible liberar el resultado.",
+      );
+
+      setMessageType(
+        "error",
+      );
+
+      return;
+    }
+
+    let notificationStatus =
+      "unknown";
+
+    try {
+      const {
+        data:
+          notificationData,
+
+        error:
+          notificationError,
+      } =
+        await supabase.functions.invoke(
+          "notify-released-result",
+          {
+            body: {
+              resultId:
+                result.id,
+            },
+          },
+        );
+
+      if (
+        notificationError
+      ) {
+        throw notificationError;
+      }
+
+      notificationStatus =
+        notificationData
+          ?.notificationStatus ??
+        "unknown";
+    }
+    catch (
+      notificationError
+    ) {
+      console.error(
+        "Resultado liberado, pero fallo el correo:",
+        notificationError,
+      );
+
+      notificationStatus =
+        "failed";
+    }
 
     setBusyResultId(
       null,
     );
 
-    if (error) {
-      console.error(error);
+    if (
+      notificationStatus ===
+      "sent"
+    ) {
       setMessage(
-        "No fue posible liberar el resultado.",
+        "Resultado liberado y correo de aviso enviado al paciente.",
       );
+
+      setMessageType(
+        "success",
+      );
+    }
+    else if (
+      notificationStatus ===
+      "already_sent"
+    ) {
+      setMessage(
+        "Resultado liberado. El correo de aviso ya habia sido enviado.",
+      );
+
+      setMessageType(
+        "success",
+      );
+    }
+    else if (
+      notificationStatus ===
+      "no_email"
+    ) {
+      setMessage(
+        "Resultado liberado. El paciente no tiene un correo valido registrado.",
+      );
+
+      setMessageType(
+        "success",
+      );
+    }
+    else {
+      setMessage(
+        "Resultado liberado, pero no fue posible enviar el correo de aviso.",
+      );
+
       setMessageType(
         "error",
       );
-      return;
     }
-
-    setMessage(
-      "Resultado liberado correctamente.",
-    );
-    setMessageType(
-      "success",
-    );
 
     await loadResults();
   }
@@ -1145,7 +1245,7 @@ export default function AdminResultsUploadPage() {
           />
 
           <span>
-            Puedes consultar el registro, pero solo Administrador y Laboratorista pueden subir o liberar resultados.
+            La carga de PDF esta disponible para Administrador y Laboratorista. Secretaria puede consultar y liberar resultados.
           </span>
         </div>
       )}
@@ -1422,7 +1522,7 @@ export default function AdminResultsUploadPage() {
                       <td
                         data-label="Acciones"
                       >
-                        {canManage &&
+                        {canRelease &&
                         result.status ===
                           "draft" ? (
                           <button

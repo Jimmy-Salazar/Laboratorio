@@ -25,6 +25,8 @@ import "../styles/admin.css";
 const PAGE_SIZE = 10;
 
 const emptyForm = {
+  patientType: "individual",
+  companyId: "",
   identificationType: "cedula",
   identificationNumber: "",
   firstName: "",
@@ -103,6 +105,12 @@ export default function AdminPatientsPage() {
       profile?.role,
     );
 
+  const [companies, setCompanies] =
+    useState([]);
+
+  const [companiesLoading, setCompaniesLoading] =
+    useState(false);
+
   const [patients, setPatients] =
     useState([]);
   const [loading, setLoading] =
@@ -141,6 +149,64 @@ export default function AdminPatientsPage() {
       ),
     [total],
   );
+
+  const loadCompanies =
+    useCallback(async () => {
+
+      setCompaniesLoading(
+        true,
+      );
+
+      const {
+        data,
+        error,
+      } =
+        await supabase
+          .from(
+            "companies",
+          )
+          .select(
+            [
+              "id",
+              "identification_number",
+              "legal_name",
+              "trade_name",
+              "contact_name",
+              "phone",
+              "email",
+              "address",
+              "active",
+            ].join(","),
+          )
+          .order(
+            "legal_name",
+            {
+              ascending: true,
+            },
+          );
+
+      setCompaniesLoading(
+        false,
+      );
+
+      if (error) {
+
+        console.error(
+          "Companies:",
+          error,
+        );
+
+        setCompanies([]);
+
+        return;
+      }
+
+      setCompanies(
+        data ?? [],
+      );
+
+    }, []);
+
 
   const loadPatients =
     useCallback(async () => {
@@ -224,6 +290,10 @@ export default function AdminPatientsPage() {
     ]);
 
   useEffect(() => {
+    loadCompanies();
+  }, [loadCompanies]);
+
+  useEffect(() => {
     loadPatients();
   }, [loadPatients]);
 
@@ -245,52 +315,144 @@ export default function AdminPatientsPage() {
   }
 
   function openCreate() {
+
     if (!canManage) {
       return;
     }
 
-    setEditingPatient(null);
-    setForm(emptyForm);
-    setMessage("");
-    setEditorOpen(true);
-  }
-
-  function openEdit(patient) {
-    if (!canManage) {
-      return;
-    }
-
-    setEditingPatient(patient);
+    setEditingPatient(
+      null,
+    );
 
     setForm({
-      identificationType:
-        patient.identification_type ??
-        "cedula",
-      identificationNumber:
-        patient.identification_number ??
+      ...emptyForm,
+
+      patientType:
+        "individual",
+
+      companyId:
         "",
-      firstName:
-        patient.first_name ?? "",
-      lastName:
-        patient.last_name ?? "",
-      birthDate:
-        patient.birth_date ?? "",
-      sex:
-        patient.sex ??
-        "not_specified",
-      phone:
-        patient.phone ?? "",
-      email:
-        patient.email ?? "",
-      address:
-        patient.address ?? "",
-      notes:
-        patient.notes ?? "",
     });
 
     setMessage("");
-    setEditorOpen(true);
+
+    setEditorOpen(
+      true,
+    );
   }
+
+
+  async function openEdit(
+    patient,
+  ) {
+
+    if (!canManage) {
+      return;
+    }
+
+    setMessage("");
+
+    const {
+      data: companyLink,
+      error: companyLinkError,
+    } =
+      await supabase
+        .from(
+          "company_workers",
+        )
+        .select(
+          "company_id",
+        )
+        .eq(
+          "patient_id",
+          patient.id,
+        )
+        .eq(
+          "active",
+          true,
+        )
+        .maybeSingle();
+
+    if (
+      companyLinkError
+    ) {
+
+      console.error(
+        companyLinkError,
+      );
+
+      setMessage(
+        "No fue posible consultar la empresa del paciente.",
+      );
+
+      setMessageType(
+        "error",
+      );
+
+      return;
+    }
+
+    setEditingPatient(
+      patient,
+    );
+
+    setForm({
+
+      patientType:
+        companyLink?.company_id
+          ? "dependent"
+          : "individual",
+
+      companyId:
+        companyLink?.company_id ??
+        "",
+
+      identificationType:
+        patient.identification_type ??
+        "cedula",
+
+      identificationNumber:
+        patient.identification_number ??
+        "",
+
+      firstName:
+        patient.first_name ??
+        "",
+
+      lastName:
+        patient.last_name ??
+        "",
+
+      birthDate:
+        patient.birth_date ??
+        "",
+
+      sex:
+        patient.sex ??
+        "not_specified",
+
+      phone:
+        patient.phone ??
+        "",
+
+      email:
+        patient.email ??
+        "",
+
+      address:
+        patient.address ??
+        "",
+
+      notes:
+        patient.notes ??
+        "",
+    });
+
+    setEditorOpen(
+      true,
+    );
+  }
+
 
   function closeEditor() {
     if (saving) {
@@ -303,8 +465,10 @@ export default function AdminPatientsPage() {
   }
 
   function validateForm() {
+
     const identification =
-      form.identificationNumber.trim();
+      form.identificationNumber
+        .trim();
 
     if (
       !form.firstName.trim() ||
@@ -313,7 +477,9 @@ export default function AdminPatientsPage() {
       return "Nombres y apellidos son obligatorios.";
     }
 
-    if (!identification) {
+    if (
+      !identification
+    ) {
       return "La identificacion es obligatoria.";
     }
 
@@ -331,6 +497,16 @@ export default function AdminPatientsPage() {
     }
 
     if (
+      form.patientType ===
+        "dependent" &&
+      !form.companyId
+    ) {
+      return "Debe seleccionar una empresa.";
+    }
+
+    if (
+      form.patientType ===
+        "individual" &&
       form.email.trim() &&
       !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
         form.email.trim(),
@@ -343,7 +519,8 @@ export default function AdminPatientsPage() {
       form.birthDate &&
       new Date(
         `${form.birthDate}T00:00:00`,
-      ) > new Date()
+      ) >
+        new Date()
     ) {
       return "La fecha de nacimiento no puede estar en el futuro.";
     }
@@ -351,7 +528,11 @@ export default function AdminPatientsPage() {
     return null;
   }
 
-  async function savePatient(event) {
+
+  async function savePatient(
+    event,
+  ) {
+
     event.preventDefault();
 
     if (
@@ -365,59 +546,156 @@ export default function AdminPatientsPage() {
       validateForm();
 
     if (validation) {
-      setMessage(validation);
-      setMessageType("error");
+
+      setMessage(
+        validation,
+      );
+
+      setMessageType(
+        "error",
+      );
+
       return;
     }
 
+    const wasEditing =
+      Boolean(
+        editingPatient,
+      );
+
+    /*
+     * Los datos de empresa NO se copian
+     * dentro de patients.
+     *
+     * Si es Dependiente, conservamos cualquier
+     * contacto personal antiguo que ya existiera,
+     * pero la interfaz usara los datos de companies.
+     */
+
     const payload = {
+
       identification_type:
         form.identificationType,
+
       identification_number:
-        form.identificationNumber.trim(),
+        form.identificationNumber
+          .trim(),
+
       first_name:
-        form.firstName.trim(),
+        form.firstName
+          .trim(),
+
       last_name:
-        form.lastName.trim(),
+        form.lastName
+          .trim(),
+
       birth_date:
-        form.birthDate || null,
+        form.birthDate ||
+        null,
+
       sex:
         form.sex,
+
       phone:
-        form.phone.trim() || null,
+        form.patientType ===
+          "individual"
+          ? (
+              form.phone.trim() ||
+              null
+            )
+          : (
+              editingPatient?.phone ??
+              null
+            ),
+
       email:
-        form.email.trim() || null,
+        form.patientType ===
+          "individual"
+          ? (
+              form.email.trim() ||
+              null
+            )
+          : (
+              editingPatient?.email ??
+              null
+            ),
+
       address:
-        form.address.trim() || null,
+        form.patientType ===
+          "individual"
+          ? (
+              form.address.trim() ||
+              null
+            )
+          : (
+              editingPatient?.address ??
+              null
+            ),
+
       notes:
-        form.notes.trim() || null,
+        form.notes.trim() ||
+        null,
     };
 
-    setSaving(true);
+    setSaving(
+      true,
+    );
+
     setMessage("");
+
+    let patientId =
+      editingPatient?.id ??
+      null;
 
     let response;
 
-    if (editingPatient) {
-      response = await supabase
-        .from("patients")
-        .update(payload)
-        .eq(
-          "id",
-          editingPatient.id,
-        );
-    } else {
-      response = await supabase
-        .from("patients")
-        .insert({
-          ...payload,
-          active: true,
-        });
+    if (
+      editingPatient
+    ) {
+
+      response =
+        await supabase
+          .from(
+            "patients",
+          )
+          .update(
+            payload,
+          )
+          .eq(
+            "id",
+            editingPatient.id,
+          );
+
+    }
+    else {
+
+      response =
+        await supabase
+          .from(
+            "patients",
+          )
+          .insert({
+            ...payload,
+            active: true,
+          })
+          .select(
+            "id",
+          )
+          .single();
+
+      patientId =
+        response.data?.id ??
+        null;
     }
 
-    setSaving(false);
+    if (
+      response.error
+    ) {
 
-    if (response.error) {
+      setSaving(
+        false,
+      );
+
       console.error(
         response.error,
       );
@@ -428,23 +706,124 @@ export default function AdminPatientsPage() {
           ? "Ya existe un paciente con esa identificacion."
           : "No fue posible guardar el paciente.",
       );
-      setMessageType("error");
+
+      setMessageType(
+        "error",
+      );
+
       return;
     }
 
-    setEditorOpen(false);
-    setEditingPatient(null);
-    setForm(emptyForm);
+    if (
+      !patientId
+    ) {
+
+      setSaving(
+        false,
+      );
+
+      setMessage(
+        "El paciente fue procesado pero no se obtuvo su identificador.",
+      );
+
+      setMessageType(
+        "error",
+      );
+
+      return;
+    }
+
+    const companyId =
+      form.patientType ===
+        "dependent"
+        ? form.companyId
+        : null;
+
+    const {
+      error: companyError,
+    } =
+      await supabase.rpc(
+        "set_patient_company",
+        {
+          p_patient_id:
+            patientId,
+
+          p_company_id:
+            companyId,
+        },
+      );
+
+    if (
+      companyError
+    ) {
+
+      console.error(
+        companyError,
+      );
+
+      /*
+       * Si era un registro nuevo, lo convertimos
+       * localmente en edicion para evitar crear
+       * un paciente duplicado al reintentar.
+       */
+
+      if (
+        !editingPatient
+      ) {
+        setEditingPatient({
+          id:
+            patientId,
+
+          ...payload,
+        });
+      }
+
+      setSaving(
+        false,
+      );
+
+      setMessage(
+        "El paciente se guardo, pero no fue posible vincular la empresa. Intente guardar nuevamente.",
+      );
+
+      setMessageType(
+        "error",
+      );
+
+      await loadPatients();
+
+      return;
+    }
+
+    setSaving(
+      false,
+    );
+
+    setEditorOpen(
+      false,
+    );
+
+    setEditingPatient(
+      null,
+    );
+
+    setForm(
+      emptyForm,
+    );
 
     setMessage(
-      editingPatient
+      wasEditing
         ? "Paciente actualizado."
         : "Paciente registrado.",
     );
-    setMessageType("success");
+
+    setMessageType(
+      "success",
+    );
 
     await loadPatients();
   }
+
 
   async function togglePatient(patient) {
     if (
@@ -489,6 +868,22 @@ export default function AdminPatientsPage() {
 
     await loadPatients();
   }
+
+  const selectedCompany =
+    useMemo(
+      () =>
+        companies.find(
+          (company) =>
+            company.id ===
+            form.companyId,
+        ) ??
+        null,
+      [
+        companies,
+        form.companyId,
+      ],
+    );
+
 
   const startItem =
     total === 0
@@ -887,6 +1282,66 @@ export default function AdminPatientsPage() {
               className="admin-patient-form"
               onSubmit={savePatient}
             >
+
+              <div className="admin-patient-type-block">
+
+                <span className="admin-patient-type-label">
+                  Tipo de paciente
+                </span>
+
+                <div className="admin-patient-type-selector">
+
+                  <button
+                    type="button"
+                    className={
+                      form.patientType ===
+                        "individual"
+                        ? "is-active"
+                        : ""
+                    }
+                    onClick={() =>
+                      setForm(
+                        (current) => ({
+                          ...current,
+
+                          patientType:
+                            "individual",
+
+                          companyId:
+                            "",
+                        }),
+                      )
+                    }
+                  >
+                    Individual
+                  </button>
+
+
+                  <button
+                    type="button"
+                    className={
+                      form.patientType ===
+                        "dependent"
+                        ? "is-active"
+                        : ""
+                    }
+                    onClick={() =>
+                      setForm(
+                        (current) => ({
+                          ...current,
+
+                          patientType:
+                            "dependent",
+                        }),
+                      )
+                    }
+                  >
+                    Dependiente
+                  </button>
+
+                </div>
+
+              </div>
               <div className="admin-form-two-columns">
                 <label>
                   <span>
@@ -1032,60 +1487,252 @@ export default function AdminPatientsPage() {
                 </label>
               </div>
 
-              <div className="admin-form-two-columns">
-                <label>
-                  <span>Telefono</span>
+              {form.patientType ===
+                "individual" ? (
 
-                  <div className="admin-form-control">
-                    <input
-                      type="tel"
-                      value={form.phone}
-                      onChange={(event) =>
-                        updateForm(
-                          "phone",
-                          event.target.value,
-                        )
-                      }
-                    />
+                <>
+
+                  <div className="admin-form-two-columns">
+
+                    <label>
+                      <span>
+                        Telefono
+                      </span>
+
+                      <div className="admin-form-control">
+
+                        <input
+                          type="tel"
+                          value={
+                            form.phone
+                          }
+                          onChange={
+                            (event) =>
+                              updateForm(
+                                "phone",
+                                event.target.value,
+                              )
+                          }
+                        />
+
+                      </div>
+                    </label>
+
+
+                    <label>
+                      <span>
+                        Correo electronico
+                      </span>
+
+                      <div className="admin-form-control">
+
+                        <input
+                          type="email"
+                          value={
+                            form.email
+                          }
+                          onChange={
+                            (event) =>
+                              updateForm(
+                                "email",
+                                event.target.value,
+                              )
+                          }
+                        />
+
+                      </div>
+                    </label>
+
                   </div>
-                </label>
 
-                <label>
-                  <span>
-                    Correo electronico
-                  </span>
 
-                  <div className="admin-form-control">
-                    <input
-                      type="email"
-                      value={form.email}
-                      onChange={(event) =>
-                        updateForm(
-                          "email",
-                          event.target.value,
-                        )
-                      }
-                    />
-                  </div>
-                </label>
-              </div>
+                  <label>
+                    <span>
+                      Direccion
+                    </span>
 
-              <label>
-                <span>Direccion</span>
+                    <div className="admin-form-control">
 
-                <div className="admin-form-control">
-                  <input
-                    type="text"
-                    value={form.address}
-                    onChange={(event) =>
-                      updateForm(
-                        "address",
-                        event.target.value,
-                      )
-                    }
-                  />
+                      <input
+                        type="text"
+                        value={
+                          form.address
+                        }
+                        onChange={
+                          (event) =>
+                            updateForm(
+                              "address",
+                              event.target.value,
+                            )
+                        }
+                      />
+
+                    </div>
+                  </label>
+
+                </>
+
+              ) : (
+
+                <div className="admin-patient-company-fields">
+
+                  <label>
+
+                    <span>
+                      Empresa
+                    </span>
+
+                    <div className="admin-form-control">
+
+                      <select
+                        value={
+                          form.companyId
+                        }
+                        disabled={
+                          companiesLoading
+                        }
+                        onChange={
+                          (event) =>
+                            updateForm(
+                              "companyId",
+                              event.target.value,
+                            )
+                        }
+                      >
+
+                        <option value="">
+                          {companiesLoading
+                            ? "Cargando empresas..."
+                            : "Seleccione una empresa"}
+                        </option>
+
+                        {companies
+                          .filter(
+                            (company) =>
+                              company.active ||
+                              company.id ===
+                                form.companyId,
+                          )
+                          .map(
+                            (company) => (
+
+                              <option
+                                key={
+                                  company.id
+                                }
+                                value={
+                                  company.id
+                                }
+                                disabled={
+                                  !company.active
+                                }
+                              >
+                                {company.legal_name}
+                                {company.trade_name
+                                  ? ` - ${company.trade_name}`
+                                  : ""}
+                                {!company.active
+                                  ? " (Inactiva)"
+                                  : ""}
+                              </option>
+
+                            ),
+                          )}
+
+                      </select>
+
+                    </div>
+
+                  </label>
+
+
+                  {selectedCompany ? (
+
+                    <div className="admin-patient-company-data">
+
+                      <div className="admin-form-two-columns">
+
+                        <label>
+
+                          <span>
+                            Contacto
+                          </span>
+
+                          <div className="admin-form-control">
+
+                            <input
+                              type="text"
+                              readOnly
+                              value={
+                                selectedCompany.contact_name ||
+                                "No registrado"
+                              }
+                            />
+
+                          </div>
+
+                        </label>
+
+
+                        <label>
+
+                          <span>
+                            Correo electronico
+                          </span>
+
+                          <div className="admin-form-control">
+
+                            <input
+                              type="text"
+                              readOnly
+                              value={
+                                selectedCompany.email ||
+                                "No registrado"
+                              }
+                            />
+
+                          </div>
+
+                        </label>
+
+                      </div>
+
+
+                      <label>
+
+                        <span>
+                          Direccion
+                        </span>
+
+                        <div className="admin-form-control">
+
+                          <input
+                            type="text"
+                            readOnly
+                            value={
+                              selectedCompany.address ||
+                              "No registrada"
+                            }
+                          />
+
+                        </div>
+
+                      </label>
+
+                    </div>
+
+                  ) : (
+
+                    <div className="admin-patient-company-empty">
+                      Seleccione una empresa para cargar automaticamente sus datos.
+                    </div>
+
+                  )}
+
                 </div>
-              </label>
+
+              )}
+
 
               <label>
                 <span>

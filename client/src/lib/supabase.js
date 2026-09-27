@@ -6,6 +6,12 @@ const supabasePublicKey =
   import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ??
   import.meta.env.VITE_SUPABASE_ANON_KEY;
 
+
+
+const authStorage =
+  typeof window !== "undefined"
+    ? window.sessionStorage
+    : undefined;
 if (!supabaseUrl || !supabasePublicKey) {
   throw new Error(
     "Missing VITE_SUPABASE_URL or public Supabase key.",
@@ -20,6 +26,8 @@ export const supabase = createClient(
       persistSession: true,
       autoRefreshToken: true,
       detectSessionInUrl: true,
+      storage: authStorage,
+      storageKey: "dr-chasi-admin-session",
     },
   },
 );

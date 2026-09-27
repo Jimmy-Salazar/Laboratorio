@@ -17,3 +17,13 @@ client/tools/
 # Build/dependencies
 node_modules/
 dist/
+client/.env
+client/.env.*
+client/node_modules/
+client/dist/
+backups/
+supabase/.temp/
+supabase/functions/**/.env
+*.bak
+*.bak.*
+temp-sri/

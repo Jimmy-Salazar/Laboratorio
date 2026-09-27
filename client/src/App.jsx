@@ -17,6 +17,8 @@ import AdminBranchesPage from "./pages/AdminBranchesPage";
 import AdminAuditLogPage from "./pages/AdminAuditLogPage";
 import AdminPatientsPage from "./pages/AdminPatientsPage";
 import AdminResultsUploadPage from "./pages/AdminResultsUploadPage";
+import AdminContactSettingsPage from "./pages/AdminContactSettingsPage";
+import AdminCompaniesPage from "./pages/AdminCompaniesPage";
 /*
  * MAPA DE RUTAS DEL FRONTEND
  * ---------------------------------------------------------------------------
@@ -148,6 +150,30 @@ export default function App() {
               ]}
             >
               <AdminResultsUploadPage />
+            </RequireRole>
+          }
+        />
+
+        <Route
+          path="contactos"
+          element={
+            <RequireRole roles={["admin"]}>
+              <AdminContactSettingsPage />
+            </RequireRole>
+          }
+        />
+
+        <Route
+          path="empresas"
+          element={
+            <RequireRole
+              roles={[
+                "admin",
+                "secretary",
+                "laboratorist",
+              ]}
+            >
+              <AdminCompaniesPage />
             </RequireRole>
           }
         />

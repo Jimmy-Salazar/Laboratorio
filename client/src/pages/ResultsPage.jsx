@@ -1,199 +1,56 @@
-import { useMemo, useState } from "react";
+import {
+  useEffect,
+  useState,
+} from "react";
 import {
   ArrowLeft,
   CalendarDays,
   CheckCircle2,
-  ClipboardCheck,
-  Clock3,
   Download,
   Eye,
+  EyeOff,
   FileText,
-  FlaskConical,
-  Info,
-  KeyRound,
+  IdCard,
   LockKeyhole,
-  Search,
+  LogOut,
+  RefreshCw,
   ShieldCheck,
   UserRound,
 } from "lucide-react";
 
-import SiteHeader from "../components/layout/SiteHeader";
-import SiteFooter from "../components/layout/SiteFooter";
-import { useLanguage } from "../context/LanguageContext";
+import { supabase } from "../lib/supabase";
+import "../styles/admin.css";
 import "../styles/results.css";
 
-/*
- * PATIENT RESULTS PAGE
- * ---------------------------------------------------------------------------
- * Public access model:
- * - Identification number
- * - Order number
- *
- * IMPORTANT:
- * This version is frontend-only.
- * It does not query Supabase and does not expose real patient data.
- */
+const PATIENT_SESSION_KEY =
+  "dr-chasi-patient-portal-token";
 
-const translations = {
-  es: {
-    heroTitle: "Ver resultados",
-    heroText:
-      "Consulta tus resultados de laboratorio de forma segura usando tu c\u00e9dula y n\u00famero de orden.",
-    accessTitle: "Acceso a resultados",
-    accessText:
-      "Ingresa los datos entregados por el laboratorio.",
-    identification: "N\u00famero de c\u00e9dula",
-    identificationPlaceholder: "Ej. 0912345678",
-    order: "N\u00famero de orden",
-    orderPlaceholder: "Ej. LAB-2026-K8P4X2",
-    submit: "Consultar resultados",
-    securityTitle: "Acceso seguro",
-    securityText:
-      "El n\u00famero de orden debe pertenecer a la misma c\u00e9dula ingresada.",
-    orderHelpTitle: "\u00bfD\u00f3nde encuentro mi n\u00famero de orden?",
-    orderHelpText:
-      "Lo encontrar\u00e1s en el comprobante entregado por el laboratorio. Tambi\u00e9n podremos enviarlo por WhatsApp cuando conectemos el sistema.",
-    required:
-      "Ingresa tu c\u00e9dula y n\u00famero de orden para continuar.",
-    demo:
-      "Vista de demostraci\u00f3n: esta pantalla todav\u00eda no consulta datos reales de Supabase.",
-    resultsTitle: "Mis resultados",
-    resultsIntro:
-      "Aqu\u00ed aparecer\u00e1n todos los resultados liberados vinculados al paciente.",
-    patient: "Paciente",
-    identificationShort: "C.I.",
-    accessOrder: "Orden usada para acceder",
-    available: "Disponible",
-    processing: "En proceso",
-    releasedResults: "Resultados disponibles",
-    history: "Historial de resultados",
-    view: "Ver resultado",
-    download: "Descargar PDF",
-    pendingMessage: "Resultado todav\u00eda no disponible.",
-    logout: "Cerrar consulta",
-    status: "Estado",
-    orderLabel: "Orden",
-    date: "Fecha",
-    study: "Estudio",
-    demoAction:
-      "Los botones de PDF se habilitar\u00e1n cuando conectemos Supabase Storage.",
-  },
-
-  en: {
-    heroTitle: "View results",
-    heroText:
-      "Access your laboratory results securely using your identification number and order number.",
-    accessTitle: "Results access",
-    accessText:
-      "Enter the information provided by the laboratory.",
-    identification: "Identification number",
-    identificationPlaceholder: "Example: 0912345678",
-    order: "Order number",
-    orderPlaceholder: "Example: LAB-2026-K8P4X2",
-    submit: "View results",
-    securityTitle: "Secure access",
-    securityText:
-      "The order number must belong to the same identification number entered.",
-    orderHelpTitle: "Where can I find my order number?",
-    orderHelpText:
-      "You will find it on the receipt provided by the laboratory. We can also send it through WhatsApp once the system is connected.",
-    required:
-      "Enter your identification number and order number to continue.",
-    demo:
-      "Demo view: this screen is not yet querying real Supabase data.",
-    resultsTitle: "My results",
-    resultsIntro:
-      "All released results linked to the patient will appear here.",
-    patient: "Patient",
-    identificationShort: "ID",
-    accessOrder: "Order used for access",
-    available: "Available",
-    processing: "Processing",
-    releasedResults: "Available results",
-    history: "Results history",
-    view: "View result",
-    download: "Download PDF",
-    pendingMessage: "Result is not available yet.",
-    logout: "Close results",
-    status: "Status",
-    orderLabel: "Order",
-    date: "Date",
-    study: "Study",
-    demoAction:
-      "PDF buttons will be enabled when Supabase Storage is connected.",
-  },
-};
-
-const demoOrders = [
-  {
-    id: "order-1",
-    orderNumber: "LAB-2026-K8P4X2",
-    date: "2026-09-24",
-    studies: [
-      {
-        id: "result-1",
-        nameEs: "Hemograma completo",
-        nameEn: "Complete blood count",
-        status: "released",
-      },
-      {
-        id: "result-2",
-        nameEs: "Perfil lip\u00eddico",
-        nameEn: "Lipid profile",
-        status: "released",
-      },
-    ],
-  },
-  {
-    id: "order-2",
-    orderNumber: "LAB-2026-M3T7Q9",
-    date: "2026-08-03",
-    studies: [
-      {
-        id: "result-3",
-        nameEs: "Glucosa en ayunas",
-        nameEn: "Fasting glucose",
-        status: "released",
-      },
-    ],
-  },
-  {
-    id: "order-3",
-    orderNumber: "LAB-2026-R5N2W7",
-    date: "2026-07-15",
-    studies: [
-      {
-        id: "result-4",
-        nameEs: "Perfil tiroideo",
-        nameEn: "Thyroid profile",
-        status: "processing",
-      },
-    ],
-  },
-];
-
-function maskIdentification(value) {
-  const cleaned = value.replace(/\s+/g, "");
-
-  if (cleaned.length <= 4) {
-    return cleaned || "----";
-  }
-
-  return `${"\u2022".repeat(Math.max(4, cleaned.length - 4))}${cleaned.slice(-4)}`;
+function normalizeIdentification(value) {
+  return String(value ?? "")
+    .replace(/\D/g, "")
+    .slice(0, 10);
 }
 
-function formatDate(value, language) {
-  const parts = value.split("-").map(Number);
+function formatDate(value) {
+  if (!value) {
+    return "-";
+  }
 
-  if (parts.length !== 3) {
+  const date =
+    new Date(
+      `${value}T12:00:00Z`,
+    );
+
+  if (
+    Number.isNaN(
+      date.getTime(),
+    )
+  ) {
     return value;
   }
 
-  const [year, month, day] = parts;
-  const date = new Date(Date.UTC(year, month - 1, day));
-
   return new Intl.DateTimeFormat(
-    language === "en" ? "en-US" : "es-EC",
+    "es-EC",
     {
       day: "2-digit",
       month: "short",
@@ -203,367 +60,1014 @@ function formatDate(value, language) {
   ).format(date);
 }
 
-export default function ResultsPage() {
-  const { language } = useLanguage();
-  const t = translations[language] ?? translations.es;
-
-  const [identification, setIdentification] = useState("");
-  const [orderNumber, setOrderNumber] = useState("");
-  const [validationMessage, setValidationMessage] = useState("");
-  const [authenticatedDemo, setAuthenticatedDemo] = useState(false);
-
-  const releasedCount = useMemo(
-    () =>
-      demoOrders.reduce(
-        (total, order) =>
-          total +
-          order.studies.filter(
-            (study) => study.status === "released",
-          ).length,
-        0,
-      ),
-    [],
-  );
-
-  const processingCount = useMemo(
-    () =>
-      demoOrders.reduce(
-        (total, order) =>
-          total +
-          order.studies.filter(
-            (study) => study.status === "processing",
-          ).length,
-        0,
-      ),
-    [],
-  );
-
-  function submitAccess(event) {
-    event.preventDefault();
-
-    const cleanIdentification = identification.trim();
-    const cleanOrder = orderNumber.trim();
-
-    if (!cleanIdentification || !cleanOrder) {
-      setValidationMessage(t.required);
-      return;
-    }
-
-    setValidationMessage("");
-    setAuthenticatedDemo(true);
-
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  }
-
-  function closeResults() {
-    setAuthenticatedDemo(false);
-    setIdentification("");
-    setOrderNumber("");
-    setValidationMessage("");
-
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
+function getStoredToken() {
+  if (
+    typeof window === "undefined"
+  ) {
+    return "";
   }
 
   return (
-    <div className="results-page">
-      <SiteHeader />
+    window.sessionStorage.getItem(
+      PATIENT_SESSION_KEY,
+    ) ?? ""
+  );
+}
 
-      <main>
-        <section className="results-hero">
-          <div className="results-hero__inner">
-            <div className="results-hero__copy">
-              <span className="results-hero__eyebrow">
-                <ShieldCheck size={18} />
-                {t.securityTitle}
-              </span>
+function saveToken(token) {
+  if (
+    typeof window === "undefined"
+  ) {
+    return;
+  }
 
-              <h1>{t.heroTitle}</h1>
-              <p>{t.heroText}</p>
-            </div>
+  if (token) {
+    window.sessionStorage.setItem(
+      PATIENT_SESSION_KEY,
+      token,
+    );
+  } else {
+    window.sessionStorage.removeItem(
+      PATIENT_SESSION_KEY,
+    );
+  }
+}
 
-            <div
-              className="results-hero__visual"
-              aria-hidden="true"
-            >
-              <span className="results-hero__file">
-                <FileText size={67} strokeWidth={1.45} />
-              </span>
+async function callPatientPortal(
+  body,
+) {
+  const {
+    data,
+    error,
+  } =
+    await supabase.functions.invoke(
+      "patient-portal-access",
+      {
+        body,
+      },
+    );
 
-              <span className="results-hero__shield">
-                <LockKeyhole size={28} />
-              </span>
+  if (error) {
+    console.error(
+      "Patient portal function error:",
+      error,
+    );
+
+    throw error;
+  }
+
+  return data;
+}
+
+export default function ResultsPage() {
+  const [identification, setIdentification] =
+    useState("");
+  const [password, setPassword] =
+    useState("");
+  const [showPassword, setShowPassword] =
+    useState(false);
+
+  const [message, setMessage] =
+    useState("");
+  const [loading, setLoading] =
+    useState(false);
+  const [restoring, setRestoring] =
+    useState(true);
+
+  const [sessionToken, setSessionToken] =
+    useState("");
+  const [portalData, setPortalData] =
+    useState(null);
+
+  async function restoreSession() {
+    const token =
+      getStoredToken();
+
+    if (!token) {
+      setRestoring(false);
+      return;
+    }
+
+    try {
+      const data =
+        await callPatientPortal({
+          action: "refresh",
+          sessionToken: token,
+        });
+
+      if (!data?.ok) {
+        saveToken("");
+        setSessionToken("");
+        setPortalData(null);
+        setRestoring(false);
+        return;
+      }
+
+      setSessionToken(token);
+      setPortalData(data);
+      setIdentification(
+        data.patient
+          ?.identification ?? "",
+      );
+    } catch {
+      saveToken("");
+      setSessionToken("");
+      setPortalData(null);
+    } finally {
+      setRestoring(false);
+    }
+  }
+
+  useEffect(() => {
+    restoreSession();
+  }, []);
+
+  async function handleSubmit(
+    event,
+  ) {
+    event.preventDefault();
+
+    if (loading) {
+      return;
+    }
+
+    const cleanIdentification =
+      normalizeIdentification(
+        identification,
+      );
+
+    const cleanPassword =
+      normalizeIdentification(
+        password,
+      );
+
+    if (
+      cleanIdentification.length !==
+        10 ||
+      cleanPassword.length !== 10
+    ) {
+      setMessage(
+        "Ingresa una cedula valida de 10 digitos.",
+      );
+      return;
+    }
+
+    setLoading(true);
+    setMessage("");
+
+    try {
+      const data =
+        await callPatientPortal({
+          action: "login",
+          identification:
+            cleanIdentification,
+          password:
+            cleanPassword,
+        });
+
+      if (!data?.ok) {
+        if (
+          data?.code ===
+          "rate_limited"
+        ) {
+          setMessage(
+            "Se realizaron demasiados intentos. Espera unos minutos e intentalo nuevamente.",
+          );
+        } else {
+          setMessage(
+            "Usuario o contrasena no validos.",
+          );
+        }
+
+        return;
+      }
+
+      saveToken(
+        data.sessionToken,
+      );
+
+      setSessionToken(
+        data.sessionToken,
+      );
+      setPortalData(data);
+      setIdentification(
+        data.patient
+          ?.identification ?? "",
+      );
+      setPassword("");
+      setMessage("");
+    } catch {
+      setMessage(
+        "No fue posible ingresar al portal en este momento.",
+      );
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function refreshResults() {
+    if (
+      !sessionToken ||
+      loading
+    ) {
+      return;
+    }
+
+    setLoading(true);
+    setMessage("");
+
+    try {
+      const data =
+        await callPatientPortal({
+          action: "refresh",
+          sessionToken,
+        });
+
+      if (!data?.ok) {
+        await closePortal();
+        return;
+      }
+
+      setPortalData(data);
+    } catch {
+      setMessage(
+        "No fue posible actualizar los resultados.",
+      );
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function openPatientResult(
+    result,
+    accessType,
+  ) {
+    if (
+      !result?.id ||
+      loading
+    ) {
+      return;
+    }
+
+    const token =
+      sessionToken ||
+      getStoredToken();
+
+    if (!token) {
+      await closePortal();
+      return;
+    }
+
+    let previewWindow =
+      null;
+
+    if (
+      accessType === "view"
+    ) {
+      previewWindow =
+        window.open(
+          "about:blank",
+          "_blank",
+        );
+
+      if (previewWindow) {
+        previewWindow.opener =
+          null;
+      }
+    }
+
+    setLoading(true);
+    setMessage("");
+
+    try {
+      const data =
+        await callPatientPortal({
+          action:
+            "open_result",
+
+          sessionToken:
+            token,
+
+          resultId:
+            result.id,
+
+          accessType,
+        });
+
+      if (!data?.ok) {
+        if (previewWindow) {
+          previewWindow.close();
+        }
+
+        if (
+          data?.code ===
+          "session_expired"
+        ) {
+          await closePortal();
+          return;
+        }
+
+        setMessage(
+          "No fue posible abrir el resultado.",
+        );
+
+        return;
+      }
+
+      /*
+       * IMPORTANTE:
+       * La Edge Function ya registro que el paciente
+       * vio o descargo el resultado.
+       *
+       * Por eso actualizamos inmediatamente las listas.
+       */
+      setPortalData(data);
+
+      if (
+        accessType === "view"
+      ) {
+        if (previewWindow) {
+          previewWindow.location.href =
+            data.url;
+        }
+        else {
+          window.open(
+            data.url,
+            "_blank",
+            "noopener,noreferrer",
+          );
+        }
+      }
+      else {
+        const link =
+          document.createElement(
+            "a",
+          );
+
+        link.href =
+          data.url;
+
+        link.rel =
+          "noopener noreferrer";
+
+        document.body
+          .appendChild(link);
+
+        link.click();
+
+        link.remove();
+      }
+    }
+    catch (error) {
+      console.error(
+        "Patient result access error:",
+        error,
+      );
+
+      if (previewWindow) {
+        previewWindow.close();
+      }
+
+      setMessage(
+        "No fue posible abrir el resultado.",
+      );
+    }
+    finally {
+      setLoading(false);
+    }
+  }
+
+  async function closePortal() {
+    const token =
+      sessionToken ||
+      getStoredToken();
+
+    saveToken("");
+    setSessionToken("");
+    setPortalData(null);
+    setIdentification("");
+    setPassword("");
+    setMessage("");
+    setShowPassword(false);
+
+    if (token) {
+      try {
+        await callPatientPortal({
+          action: "logout",
+          sessionToken: token,
+        });
+      } catch {
+        // Browser session is already cleared.
+      }
+    }
+  }
+
+  if (restoring) {
+    return (
+      <div className="admin-login-page">
+        <div className="admin-login-card">
+          <div className="admin-login-brand admin-login-brand--logo">
+            <img
+              className="admin-login-brand-logo"
+              src="/brand/dr-milton-chasi-logo.png"
+              alt="Laboratorio Clinico Dr. Milton Chasi"
+            />
+          </div>
+
+          <div className="admin-login-heading">
+            <span className="admin-login-heading__icon">
+              <ShieldCheck size={27} />
+            </span>
+            <div>
+              <h1>Portal de pacientes</h1>
+              <p>Verificando sesion...</p>
             </div>
           </div>
-        </section>
+        </div>
+      </div>
+    );
+  }
 
-        {!authenticatedDemo ? (
-          <section className="results-access-section">
-            <div className="results-access-layout">
-              <form
-                className="results-access-card"
-                onSubmit={submitAccess}
-              >
-                <div className="results-card-heading">
-                  <span className="results-card-heading__icon">
-                    <Search size={30} />
-                  </span>
+  if (portalData?.ok) {
+    const patient =
+      portalData.patient ?? {};
 
-                  <div>
-                    <h2>{t.accessTitle}</h2>
-                    <p>{t.accessText}</p>
-                  </div>
-                </div>
+    const results =
+      portalData.results ??
+      [];
 
-                <div className="results-access-fields">
-                  <label>
-                    <span>{t.identification}</span>
+    const recentResults =
+      portalData.recentResults ??
+      results.filter(
+        (result) =>
+          !result.accessed,
+      );
 
-                    <div className="results-input-shell">
-                      <UserRound size={20} />
+    const historyResults =
+      portalData.historyResults ??
+      results.filter(
+        (result) =>
+          result.accessed,
+      );
 
-                      <input
-                        type="text"
-                        inputMode="numeric"
-                        autoComplete="off"
-                        placeholder={t.identificationPlaceholder}
-                        value={identification}
-                        onChange={(event) =>
-                          setIdentification(event.target.value)
-                        }
-                      />
-                    </div>
-                  </label>
+    const currentResult =
+      portalData.currentResult ??
+      recentResults[0] ??
+      null;
 
-                  <label>
-                    <span>{t.order}</span>
+    const currentResultName =
+      currentResult
+        ?.studyName ??
+      "Sin resultados nuevos";
 
-                    <div className="results-input-shell">
-                      <KeyRound size={20} />
+    const historyCount =
+      historyResults.length;
 
-                      <input
-                        type="text"
-                        autoComplete="off"
-                        placeholder={t.orderPlaceholder}
-                        value={orderNumber}
-                        onChange={(event) =>
-                          setOrderNumber(
-                            event.target.value.toUpperCase(),
-                          )
-                        }
-                      />
-                    </div>
-                  </label>
-                </div>
+    return (
+      <div className="patient-portal-page">
+        <header className="patient-portal-topbar">
+          <div className="patient-portal-topbar__brand patient-portal-topbar__brand--logo">
+            <img
+              className="patient-portal-brand-logo patient-portal-brand-logo--topbar"
+              src="/brand/dr-milton-chasi-logo.png"
+              alt="Laboratorio Clinico Dr. Milton Chasi"
+            />
+          </div>
 
-                {validationMessage ? (
-                  <div
-                    className="results-validation"
-                    role="alert"
-                  >
-                    <Info size={18} />
-                    <span>{validationMessage}</span>
-                  </div>
-                ) : null}
+          <button
+            type="button"
+            onClick={closePortal}
+          >
+            <LogOut size={18} />
+            <span>
+              Cerrar sesion
+            </span>
+          </button>
+        </header>
 
-                <button
-                  type="submit"
-                  className="results-primary-button"
-                >
-                  <Search size={19} />
-                  <span>{t.submit}</span>
-                </button>
+        <main className="patient-portal-main">
+          <section className="patient-portal-welcome">
+            <div>
+              <span className="patient-portal-eyebrow">
+                <ShieldCheck size={17} />
+                Portal de pacientes
+              </span>
 
-                <p className="results-demo-note">
-                  {t.demo}
-                </p>
-              </form>
+              <h1>
+                Mis resultados
+              </h1>
 
-              <aside className="results-security-card">
-                <span className="results-security-card__icon">
-                  <ShieldCheck size={35} />
+              <p>
+                Revisa y descarga los
+                resultados liberados por
+                el laboratorio.
+              </p>
+            </div>
+
+            <div className="patient-portal-user-card">
+              <span>
+                <UserRound size={24} />
+              </span>
+
+              <div>
+                <small>
+                  Paciente
+                </small>
+
+                <strong>
+                  {patient.displayName}
+                </strong>
+
+                <span className="patient-portal-user-id">
+                  C.I.{" "}
+                  {patient.identification}
+                </span>
+              </div>
+            </div>
+          </section>
+
+          <section className="patient-portal-summary">
+            <article>
+              <span className="is-green">
+                <CheckCircle2 size={22} />
+              </span>
+
+              <div>
+                <small>
+                  Resultado actual
+                </small>
+
+                <strong className="patient-portal-current-study">
+                  {currentResultName}
+                </strong>
+              </div>
+            </article>
+
+            <article>
+              <span className="is-blue">
+                <CalendarDays size={22} />
+              </span>
+
+              <div>
+                <small>
+                  Historial
+                </small>
+                <strong>
+                  {historyCount}
+                </strong>
+              </div>
+            </article>
+          </section>
+
+          {message ? (
+            <div
+              className="patient-login-message"
+              role="status"
+            >
+              {message}
+            </div>
+          ) : null}
+
+          <section className="patient-portal-results-card">
+
+            <div className="patient-portal-results-heading">
+
+              <div>
+                <span>
+                  <FileText size={22} />
                 </span>
 
-                <h2>{t.securityTitle}</h2>
-                <p>{t.securityText}</p>
+                <div>
+                  <h2>
+                    Estudios recientes
+                  </h2>
 
-                <div className="results-security-divider" />
-
-                <div className="results-order-help">
-                  <strong>{t.orderHelpTitle}</strong>
-                  <p>{t.orderHelpText}</p>
+                  <p>
+                    Resultados nuevos que aun
+                    no has visto ni descargado.
+                  </p>
                 </div>
-              </aside>
+              </div>
+
+              <button
+                type="button"
+                className="patient-portal-refresh"
+                onClick={refreshResults}
+                disabled={loading}
+              >
+                <RefreshCw size={16} />
+
+                <span>
+                  {loading
+                    ? "Actualizando..."
+                    : "Actualizar"}
+                </span>
+              </button>
+
             </div>
-          </section>
-        ) : (
-          <section className="results-history-section">
-            <div className="results-history-inner">
-              <div className="results-patient-header">
-                <div>
-                  <span className="results-patient-header__eyebrow">
-                    <CheckCircle2 size={17} />
-                    {t.resultsTitle}
-                  </span>
 
-                  <h2>{t.patient}</h2>
 
-                  <p>{t.resultsIntro}</p>
-                </div>
+            {recentResults.length ? (
 
-                <button
-                  type="button"
-                  className="results-secondary-button"
-                  onClick={closeResults}
-                >
-                  <ArrowLeft size={18} />
-                  <span>{t.logout}</span>
-                </button>
-              </div>
+              <div className="patient-portal-result-list">
 
-              <div className="results-patient-meta">
-                <div>
-                  <span>{t.identificationShort}</span>
-                  <strong>
-                    {maskIdentification(identification)}
-                  </strong>
-                </div>
+                {recentResults.map(
+                  (result) => (
 
-                <div>
-                  <span>{t.accessOrder}</span>
-                  <strong>{orderNumber}</strong>
-                </div>
+                    <article
+                      className="patient-portal-result-row"
+                      key={result.id}
+                    >
 
-                <div>
-                  <span>{t.releasedResults}</span>
-                  <strong>{releasedCount}</strong>
-                </div>
+                      <span className="patient-portal-result-icon">
+                        <FileText size={22} />
+                      </span>
 
-                <div>
-                  <span>{t.processing}</span>
-                  <strong>{processingCount}</strong>
-                </div>
-              </div>
 
-              <div className="results-demo-banner">
-                <Info size={18} />
-                <span>{t.demo}</span>
-              </div>
+                      <div className="patient-portal-result-copy">
 
-              <div className="results-list-heading">
-                <ClipboardCheck size={23} />
-                <h3>{t.history}</h3>
-              </div>
+                        <small>
+                          {result.orderNumber}
+                        </small>
 
-              <div className="results-orders">
-                {demoOrders.map((order) => (
-                  <article
-                    className="results-order-card"
-                    key={order.id}
-                  >
-                    <header className="results-order-card__header">
-                      <div>
-                        <span className="results-order-card__label">
-                          {t.orderLabel}
-                        </span>
+                        <strong>
+                          {result.studyName}
+                        </strong>
 
-                        <strong>{order.orderNumber}</strong>
-                      </div>
-
-                      <div className="results-order-card__date">
-                        <CalendarDays size={17} />
                         <span>
-                          {formatDate(order.date, language)}
+                          <CalendarDays size={14} />
+
+                          {formatDate(
+                            result.resultDate,
+                          )}
                         </span>
+
                       </div>
-                    </header>
 
-                    <div className="results-study-list">
-                      {order.studies.map((study) => {
-                        const released =
-                          study.status === "released";
 
-                        return (
-                          <div
-                            className="results-study-row"
-                            key={study.id}
-                          >
-                            <span className="results-study-row__icon">
-                              <FlaskConical size={22} />
-                            </span>
+                      <div className="patient-portal-status is-released">
+                        Nuevo
+                      </div>
 
-                            <div className="results-study-row__copy">
-                              <small>{t.study}</small>
 
-                              <strong>
-                                {language === "en"
-                                  ? study.nameEn
-                                  : study.nameEs}
-                              </strong>
-                            </div>
+                      <div className="patient-portal-result-actions">
 
-                            <div className="results-study-row__status">
-                              <span>{t.status}</span>
+                        <button
+                          type="button"
+                          className="patient-portal-link"
+                          disabled={loading}
+                          onClick={() =>
+                            openPatientResult(
+                              result,
+                              "view",
+                            )
+                          }
+                        >
+                          <Eye size={17} />
 
-                              <strong
-                                className={
-                                  released
-                                    ? "is-released"
-                                    : "is-processing"
-                                }
-                              >
-                                {released
-                                  ? t.available
-                                  : t.processing}
-                              </strong>
-                            </div>
+                          <span>
+                            Ver
+                          </span>
+                        </button>
 
-                            <div className="results-study-row__actions">
-                              {released ? (
-                                <>
-                                  <button
-                                    type="button"
-                                    disabled
-                                    title={t.demoAction}
-                                  >
-                                    <Eye size={17} />
-                                    <span>{t.view}</span>
-                                  </button>
 
-                                  <button
-                                    type="button"
-                                    disabled
-                                    title={t.demoAction}
-                                  >
-                                    <Download size={17} />
-                                    <span>{t.download}</span>
-                                  </button>
-                                </>
-                              ) : (
-                                <span className="results-processing-message">
-                                  <Clock3 size={16} />
-                                  {t.pendingMessage}
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </article>
-                ))}
+                        <button
+                          type="button"
+                          className="patient-portal-link is-primary"
+                          disabled={loading}
+                          onClick={() =>
+                            openPatientResult(
+                              result,
+                              "download",
+                            )
+                          }
+                        >
+                          <Download size={17} />
+
+                          <span>
+                            Descargar
+                          </span>
+                        </button>
+
+                      </div>
+
+                    </article>
+
+                  ),
+                )}
+
               </div>
-            </div>
-          </section>
-        )}
-      </main>
 
-      <SiteFooter />
+            ) : (
+
+              <div className="patient-portal-empty">
+
+                <CheckCircle2 size={32} />
+
+                <strong>
+                  No tienes estudios nuevos.
+                </strong>
+
+                <span>
+                  Los nuevos resultados
+                  liberados apareceran aqui.
+                </span>
+
+              </div>
+
+            )}
+
+          </section>
+
+
+
+          <section className="patient-portal-results-card patient-portal-history-card">
+
+            <div className="patient-portal-results-heading">
+
+              <div>
+
+                <span>
+                  <CalendarDays size={22} />
+                </span>
+
+                <div>
+
+                  <h2>
+                    Historial de resultados
+                  </h2>
+
+                  <p>
+                    Resultados que ya viste
+                    o descargaste.
+                  </p>
+
+                </div>
+
+              </div>
+
+            </div>
+
+
+            {historyResults.length ? (
+
+              <div className="patient-portal-result-list">
+
+                {historyResults.map(
+                  (result) => (
+
+                    <article
+                      className="patient-portal-result-row"
+                      key={result.id}
+                    >
+
+                      <span className="patient-portal-result-icon">
+                        <FileText size={22} />
+                      </span>
+
+
+                      <div className="patient-portal-result-copy">
+
+                        <small>
+                          {result.orderNumber}
+                        </small>
+
+                        <strong>
+                          {result.studyName}
+                        </strong>
+
+                        <span>
+                          <CalendarDays size={14} />
+
+                          {formatDate(
+                            result.resultDate,
+                          )}
+                        </span>
+
+                      </div>
+
+
+                      <div className="patient-portal-status">
+                        Historial
+                      </div>
+
+
+                      <div className="patient-portal-result-actions">
+
+                        <button
+                          type="button"
+                          className="patient-portal-link"
+                          disabled={loading}
+                          onClick={() =>
+                            openPatientResult(
+                              result,
+                              "view",
+                            )
+                          }
+                        >
+                          <Eye size={17} />
+
+                          <span>
+                            Ver
+                          </span>
+                        </button>
+
+
+                        <button
+                          type="button"
+                          className="patient-portal-link is-primary"
+                          disabled={loading}
+                          onClick={() =>
+                            openPatientResult(
+                              result,
+                              "download",
+                            )
+                          }
+                        >
+                          <Download size={17} />
+
+                          <span>
+                            Descargar
+                          </span>
+                        </button>
+
+                      </div>
+
+                    </article>
+
+                  ),
+                )}
+
+              </div>
+
+            ) : (
+
+              <div className="patient-portal-empty">
+
+                <FileText size={32} />
+
+                <strong>
+                  Tu historial esta vacio.
+                </strong>
+
+                <span>
+                  Cuando veas o descargues
+                  un resultado aparecera aqui.
+                </span>
+
+              </div>
+
+            )}
+
+          </section>
+
+
+          <button
+            type="button"
+            className="patient-portal-back"
+            onClick={closePortal}
+          >
+            <ArrowLeft size={17} />
+            <span>
+              Salir del portal
+            </span>
+          </button>
+        </main>
+      </div>
+    );
+  }
+
+  return (
+    <div className="admin-login-page">
+      <div className="admin-login-card">
+        <div className="admin-login-brand admin-login-brand--logo">
+          <img
+            className="admin-login-brand-logo"
+            src="/brand/dr-milton-chasi-logo.png"
+            alt="Laboratorio Clinico Dr. Milton Chasi"
+          />
+        </div>
+
+        <div className="admin-login-heading">
+          <span className="admin-login-heading__icon">
+            <ShieldCheck size={27} />
+          </span>
+
+          <div>
+            <h1>
+              Portal de pacientes
+            </h1>
+
+            <p>
+              Acceso para consulta de
+              resultados de laboratorio.
+            </p>
+          </div>
+        </div>
+
+        <form
+          onSubmit={handleSubmit}
+        >
+          <label className="admin-login-field">
+            <span>Cedula</span>
+
+            <div>
+              <IdCard size={19} />
+
+              <input
+                type="text"
+                inputMode="numeric"
+                autoComplete="username"
+                maxLength={10}
+                value={identification}
+                onChange={(event) =>
+                  setIdentification(
+                    normalizeIdentification(
+                      event.target.value,
+                    ),
+                  )
+                }
+                placeholder="Ingresa tu cedula"
+              />
+            </div>
+          </label>
+
+          <label className="admin-login-field">
+            <span>
+              Contrasena
+            </span>
+
+            <div>
+              <LockKeyhole size={19} />
+
+              <input
+                type={
+                  showPassword
+                    ? "text"
+                    : "password"
+                }
+                inputMode="numeric"
+                autoComplete="current-password"
+                maxLength={10}
+                value={password}
+                onChange={(event) =>
+                  setPassword(
+                    normalizeIdentification(
+                      event.target.value,
+                    ),
+                  )
+                }
+                placeholder="Ingresa tu contrasena"
+              />
+
+              <button
+                type="button"
+                className="patient-password-toggle"
+                onClick={() =>
+                  setShowPassword(
+                    (value) =>
+                      !value,
+                  )
+                }
+                aria-label={
+                  showPassword
+                    ? "Ocultar contrasena"
+                    : "Mostrar contrasena"
+                }
+              >
+                {showPassword ? (
+                  <EyeOff size={18} />
+                ) : (
+                  <Eye size={18} />
+                )}
+              </button>
+            </div>
+          </label>
+
+          {message ? (
+            <div
+              className="patient-login-message"
+              role="alert"
+            >
+              {message}
+            </div>
+          ) : null}
+
+          <button
+            type="submit"
+            className="admin-login-submit"
+            disabled={
+              loading ||
+              !identification ||
+              !password
+            }
+          >
+            {loading
+              ? "Ingresando..."
+              : "Ingresar"}
+          </button>
+        </form>
+      </div>
     </div>
   );
 }

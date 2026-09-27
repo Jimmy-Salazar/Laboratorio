@@ -25,6 +25,8 @@ import {
   UsersRound,
   X,
   ScrollText,
+
+  Share2,
 } from "lucide-react";
 
 import { useAdminAuth } from "../../context/AdminAuthContext";
@@ -43,6 +45,11 @@ const operationalNavigation = [
     to: "/admin/pacientes",
     label: "Pacientes",
     icon: UsersRound,
+  },
+  {
+    to: "/admin/empresas",
+    label: "Empresas",
+    icon: Building2,
   },
   {
     to: "/admin/resultados",
@@ -71,6 +78,11 @@ const configurationNavigation = [
     to: "/admin/actividad",
     label: "Registro de actividad",
     icon: ScrollText,
+  },
+  {
+    to: "/admin/contactos",
+    label: "Contactos y redes",
+    icon: Share2,
   },
 ];
 

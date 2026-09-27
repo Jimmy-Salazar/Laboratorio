@@ -39,6 +39,7 @@ const entityLabels = {
   branch_hours: "Horarios",
   staff_profiles: "Usuarios",
   patients: "Pacientes",
+  companies: "Empresas",
   patient_results: "Resultados",
   result_orders: "Ordenes de resultados",
   appointments: "Citas",

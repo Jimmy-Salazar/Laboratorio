@@ -27,9 +27,11 @@ import {
   ScrollText,
 
   Share2,
+  Images,
 } from "lucide-react";
 
 import { useAdminAuth } from "../../context/AdminAuthContext";
+import ForcedPasswordChangeModal from "./ForcedPasswordChangeModal";
 import "../../styles/admin.css";
 
 /* PATCH_06_18_SIMPLIFIED_OPERATIONAL_MENU */
@@ -78,6 +80,11 @@ const configurationNavigation = [
     to: "/admin/actividad",
     label: "Registro de actividad",
     icon: ScrollText,
+  },
+  {
+    to: "/admin/destacados",
+    label: "Destacados",
+    icon: Images,
   },
   {
     to: "/admin/contactos",
@@ -185,6 +192,15 @@ export default function AdminLayout() {
 
   const isAdmin =
     profile?.role === "admin";
+
+  if (
+    profile?.must_change_password
+  ) {
+    return (
+      <ForcedPasswordChangeModal />
+    );
+  }
+
 
   return (
     <div className="admin-shell">

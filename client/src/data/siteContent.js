@@ -27,6 +27,7 @@ export const siteContent = {
       description:
         "Estudios de laboratorio confiables, con tecnología de vanguardia y resultados digitales al alcance de tus manos.",
       primaryAction: "Ver resultados",
+      quoteAction: "Cotizar",
       secondaryAction: "Agendar un estudio",
       trustItems: [
         {
@@ -314,6 +315,7 @@ export const siteContent = {
       description:
         "Reliable laboratory testing, advanced technology and digital results available at your fingertips.",
       primaryAction: "View results",
+      quoteAction: "Get a quote",
       secondaryAction: "Schedule a study",
       trustItems: [
         {

@@ -22,7 +22,7 @@ async function loadStaffProfile(userId) {
   const { data, error } = await supabase
     .from("staff_profiles")
     .select(
-      "user_id, full_name, role, active, identification_number",
+      "user_id, full_name, role, active, identification_number, branch_id, email, must_change_password, password_changed_at, temporary_password_sent_at",
     )
     .eq("user_id", userId)
     .maybeSingle();
@@ -56,8 +56,14 @@ export function AdminAuthProvider({ children }) {
     }
 
     if (
-      nextProfile.role !== "master" &&
-      nextProfile.role !== "admin"
+      ![
+        "master",
+        "admin",
+        "secretary",
+        "laboratorist",
+      ].includes(
+        nextProfile.role,
+      )
     ) {
       await supabase.auth.signOut();
       setProfile(null);

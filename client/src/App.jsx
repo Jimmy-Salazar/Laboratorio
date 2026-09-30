@@ -1,4 +1,4 @@
-﻿import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import AppointmentPage from "./pages/AppointmentPage";
@@ -19,6 +19,7 @@ import AdminPatientsPage from "./pages/AdminPatientsPage";
 import AdminResultsUploadPage from "./pages/AdminResultsUploadPage";
 import AdminContactSettingsPage from "./pages/AdminContactSettingsPage";
 import AdminCompaniesPage from "./pages/AdminCompaniesPage";
+import AdminHighlightsPage from "./pages/AdminHighlightsPage";
 /*
  * MAPA DE RUTAS DEL FRONTEND
  * ---------------------------------------------------------------------------
@@ -150,6 +151,15 @@ export default function App() {
               ]}
             >
               <AdminResultsUploadPage />
+            </RequireRole>
+          }
+        />
+
+        <Route
+          path="destacados"
+          element={
+            <RequireRole roles={["admin"]}>
+              <AdminHighlightsPage />
             </RequireRole>
           }
         />

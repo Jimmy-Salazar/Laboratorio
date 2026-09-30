@@ -1,0 +1,14 @@
+.admin-result-bulk-top {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+/* A batch has one patient, so each row only needs file, status and remove. */
+.admin-result-bulk-row {
+  grid-template-columns: minmax(0, 1fr) minmax(120px, .45fr) 38px;
+}
+
+@media (max-width: 900px) {
+  .admin-result-bulk-row {
+    grid-template-columns: minmax(0, 1fr) 38px;
+  }
+}

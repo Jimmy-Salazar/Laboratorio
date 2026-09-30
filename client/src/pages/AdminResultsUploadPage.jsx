@@ -22,12 +22,16 @@ import {
 import { useAdminAuth } from "../context/AdminAuthContext";
 import { supabase } from "../lib/supabase";
 import "../styles/admin.css";
+import "../styles/admin-result-unified.css";
+
+/* PATCH_06_47_RESULTS_WITHOUT_STUDY */
 
 /* PATCH_06_21_1_REMOVE_SECURITY_CARD */
 /* PATCH_06_21_2_REMOVE_IMMEDIATE_RELEASE */
 
 const PAGE_SIZE = 10;
 const MAX_FILE_SIZE = 20 * 1024 * 1024;
+const ADMIN_RESULT_BRANCH_PREFIX = "GYE";
 
 function todayInGuayaquil() {
   return new Intl.DateTimeFormat(
@@ -129,7 +133,7 @@ export default function AdminResultsUploadPage() {
     useAdminAuth();
 
   const canManage =
-    ["admin", "laboratorist"].includes(
+    ["admin", "secretary", "laboratorist"].includes(
       profile?.role,
     );
 
@@ -138,8 +142,18 @@ export default function AdminResultsUploadPage() {
       profile?.role,
     );
 
-  const [studies, setStudies] =
+  const [branches, setBranches] =
     useState([]);
+  const [selectedBranchId, setSelectedBranchId] =
+    useState("");
+  const [uploadMode, setUploadMode] =
+    useState("single");
+
+  const [bulkRows, setBulkRows] =
+    useState([]);
+  const [bulkProcessing, setBulkProcessing] =
+    useState(false);
+
   const [patientSearch, setPatientSearch] =
     useState("");
   const [patientMatches, setPatientMatches] =
@@ -148,9 +162,6 @@ export default function AdminResultsUploadPage() {
     useState(false);
   const [selectedPatient, setSelectedPatient] =
     useState(null);
-
-  const [studyId, setStudyId] =
-    useState("");
   const [resultDate, setResultDate] =
     useState(
       todayInGuayaquil(),
@@ -178,19 +189,24 @@ export default function AdminResultsUploadPage() {
   const [messageType, setMessageType] =
     useState("info");
 
-  const loadStudies =
+  const loadBranches =
     useCallback(async () => {
       const {
         data,
         error,
       } = await supabase
-        .from("studies")
+        .from("branches")
         .select(
-          "id, name_es, active, sort_order",
+          "id, name_es, result_order_prefix, active, sort_order",
         )
         .eq(
           "active",
           true,
+        )
+        .not(
+          "result_order_prefix",
+          "is",
+          null,
         )
         .order(
           "sort_order",
@@ -207,10 +223,17 @@ export default function AdminResultsUploadPage() {
 
       if (error) {
         console.error(error);
+        setBranches([]);
+        setMessage(
+          "No fue posible cargar las sucursales.",
+        );
+        setMessageType(
+          "error",
+        );
         return;
       }
 
-      setStudies(
+      setBranches(
         data ?? [],
       );
     }, []);
@@ -242,6 +265,7 @@ export default function AdminResultsUploadPage() {
               order_number,
               status,
               patient_id,
+              branch_id,
               patients!inner(
                 id,
                 first_name,
@@ -279,11 +303,34 @@ export default function AdminResultsUploadPage() {
     }, []);
 
   useEffect(() => {
-    loadStudies();
     loadResults();
+    loadBranches();
   }, [
-    loadStudies,
     loadResults,
+    loadBranches,
+  ]);
+
+  useEffect(() => {
+    if (!profile) {
+      setSelectedBranchId("");
+      return;
+    }
+
+    const branchId = profile.role === "admin"
+      ? branches.find(
+          (branch) =>
+            branch.result_order_prefix === ADMIN_RESULT_BRANCH_PREFIX,
+        )?.id
+      : profile.branch_id;
+
+    setSelectedBranchId(
+      branchId && branches.some((branch) => branch.id === branchId)
+        ? branchId
+        : "",
+    );
+  }, [
+    profile,
+    branches,
   ]);
 
   useEffect(() => {
@@ -383,9 +430,7 @@ export default function AdminResultsUploadPage() {
 
   function selectPatient(patient) {
     setSelectedPatient(patient);
-    setPatientSearch(
-      patientFullName(patient),
-    );
+    setPatientSearch(patientFullName(patient));
     setPatientMatches([]);
   }
 
@@ -393,6 +438,32 @@ export default function AdminResultsUploadPage() {
     setSelectedPatient(null);
     setPatientSearch("");
     setPatientMatches([]);
+  }
+
+  function branchById(
+    branchId,
+  ) {
+    return branches.find(
+      (branch) =>
+        branch.id === branchId,
+    ) ?? null;
+  }
+
+  function branchLabel(
+    branchId,
+  ) {
+    const branch =
+      branchById(
+        branchId,
+      );
+
+    if (!branch) {
+      return "-";
+    }
+
+    return branch.result_order_prefix
+      ? `${branch.result_order_prefix} - ${branch.name_es}`
+      : branch.name_es;
   }
 
   function handleFileChange(event) {
@@ -452,9 +523,9 @@ export default function AdminResultsUploadPage() {
       return;
     }
 
-    if (!selectedPatient) {
+    if (!selectedBranchId) {
       setMessage(
-        "Selecciona un paciente.",
+        "Selecciona la sucursal.",
       );
       setMessageType(
         "error",
@@ -462,9 +533,9 @@ export default function AdminResultsUploadPage() {
       return;
     }
 
-    if (!studyId) {
+    if (!selectedPatient) {
       setMessage(
-        "Selecciona un estudio.",
+        "Selecciona un paciente.",
       );
       setMessageType(
         "error",
@@ -539,14 +610,15 @@ export default function AdminResultsUploadPage() {
       data,
       error: rpcError,
     } = await supabase.rpc(
-      "create_uploaded_patient_result",
+      "create_uploaded_patient_result_v2",
       {
         p_order_id:
           orderId,
         p_patient_id:
           selectedPatient.id,
-        p_study_id:
-          studyId,
+        p_branch_id:
+          selectedBranchId,
+        p_study_id: null,
         p_result_date:
           resultDate,
         p_file_path:
@@ -597,10 +669,6 @@ export default function AdminResultsUploadPage() {
     );
 
     clearPatient();
-    setStudyId("");
-    setResultDate(
-      todayInGuayaquil(),
-    );
     setPdfFile(null);
 
     const input =
@@ -613,6 +681,348 @@ export default function AdminResultsUploadPage() {
     }
 
     await loadResults();
+  }
+
+  function handleBulkFiles(
+    event,
+  ) {
+    const files =
+      Array.from(
+        event.target.files ?? [],
+      );
+
+    setMessage("");
+
+    if (files.length === 0) {
+      return;
+    }
+
+    const invalid =
+      files.find(
+        (file) =>
+          file.type !==
+            "application/pdf" ||
+          file.size >
+            MAX_FILE_SIZE,
+      );
+
+    if (invalid) {
+      setMessage(
+        "Todos los archivos deben ser PDF y pesar maximo 20 MB cada uno.",
+      );
+      setMessageType(
+        "error",
+      );
+      event.target.value = "";
+      return;
+    }
+
+    const rows = files.map((file) => ({
+      id: crypto.randomUUID(),
+      file,
+      status: "pending",
+      orderNumber: "",
+      error: "",
+    }));
+
+    setBulkRows(
+      rows,
+    );
+  }
+
+  function updateBulkRow(
+    rowId,
+    patch,
+  ) {
+    setBulkRows(
+      (current) =>
+        current.map(
+          (row) =>
+            row.id === rowId
+              ? {
+                  ...row,
+                  ...patch,
+                }
+              : row,
+        ),
+    );
+  }
+
+  function startNewBulkBatch() {
+    if (bulkProcessing) return;
+    if (
+      bulkRows.some((row) => row.status !== "success") &&
+      !window.confirm("¿Descartar los PDF pendientes o fallidos y empezar otro lote?")
+    ) return;
+
+    setBulkRows([]);
+    clearPatient();
+    const input = document.getElementById("result-bulk-pdf-input");
+    if (input) input.value = "";
+    setMessage("");
+  }
+
+  function removeBulkRow(
+    rowId,
+  ) {
+    if (bulkProcessing) {
+      return;
+    }
+
+    setBulkRows(
+      (current) =>
+        current.filter(
+          (row) =>
+            row.id !== rowId,
+        ),
+    );
+  }
+
+  async function processBulkResults(
+    event,
+  ) {
+    event.preventDefault();
+
+    if (
+      bulkProcessing ||
+      !canManage
+    ) {
+      return;
+    }
+
+    if (!selectedBranchId) {
+      setMessage(
+        "Selecciona la sucursal.",
+      );
+      setMessageType(
+        "error",
+      );
+      return;
+    }
+
+    if (!resultDate) {
+      setMessage(
+        "Selecciona la fecha del resultado.",
+      );
+      setMessageType(
+        "error",
+      );
+      return;
+    }
+
+    const pendingRows =
+      bulkRows.filter(
+        (row) =>
+          row.status !==
+          "success",
+      );
+
+    if (
+      pendingRows.length === 0
+    ) {
+      setMessage(
+        "No hay resultados pendientes para procesar.",
+      );
+      setMessageType(
+        "info",
+      );
+      return;
+    }
+
+    if (!selectedPatient) {
+      setMessage("Selecciona el paciente para todos los PDF del lote.");
+      setMessageType("error");
+      return;
+    }
+
+    setBulkProcessing(
+      true,
+    );
+    setMessage("");
+
+    let successCount = 0;
+    let errorCount = 0;
+
+    for (
+      const row of pendingRows
+    ) {
+      updateBulkRow(
+        row.id,
+        {
+          status:
+            "uploading",
+          error:
+            "",
+          orderNumber:
+            "",
+        },
+      );
+
+      const orderId =
+        crypto.randomUUID();
+
+      const fileToken =
+        crypto.randomUUID();
+
+      const filePath =
+        `${selectedPatient.id}/${orderId}/${fileToken}.pdf`;
+
+      const {
+        error:
+          uploadError,
+      } =
+        await supabase.storage
+          .from(
+            "patient-results",
+          )
+          .upload(
+            filePath,
+            row.file,
+            {
+              contentType:
+                "application/pdf",
+              upsert:
+                false,
+            },
+          );
+
+      if (uploadError) {
+        console.error(
+          uploadError,
+        );
+
+        errorCount +=
+          1;
+
+        updateBulkRow(
+          row.id,
+          {
+            status:
+              "error",
+            error:
+              "No fue posible subir el PDF.",
+          },
+        );
+
+        continue;
+      }
+
+      const {
+        data,
+        error:
+          rpcError,
+      } =
+        await supabase.rpc(
+          "create_uploaded_patient_result_v2",
+          {
+            p_order_id:
+              orderId,
+            p_patient_id:
+              selectedPatient.id,
+            p_branch_id:
+              selectedBranchId,
+            p_study_id:
+              null,
+            p_result_date:
+              resultDate,
+            p_file_path:
+              filePath,
+            p_original_file_name:
+              row.file.name,
+            p_file_size_bytes:
+              row.file.size,
+            p_release:
+              false,
+          },
+        );
+
+      if (rpcError) {
+        console.error(
+          rpcError,
+        );
+
+        await supabase.storage
+          .from(
+            "patient-results",
+          )
+          .remove([
+            filePath,
+          ]);
+
+        errorCount +=
+          1;
+
+        updateBulkRow(
+          row.id,
+          {
+            status:
+              "error",
+            error:
+              "No fue posible registrar el resultado.",
+          },
+        );
+
+        continue;
+      }
+
+      const created =
+        Array.isArray(
+          data,
+        )
+          ? data[0]
+          : data;
+
+      successCount +=
+        1;
+
+      updateBulkRow(
+        row.id,
+        {
+          status:
+            "success",
+          orderNumber:
+            created?.order_number ??
+            "",
+          error:
+            "",
+        },
+      );
+    }
+
+    setBulkProcessing(
+      false,
+    );
+
+    await loadResults();
+
+    if (
+      errorCount === 0
+    ) {
+      setMessage(
+        `${successCount} resultado(s) cargado(s) correctamente.`,
+      );
+      setMessageType(
+        "success",
+      );
+    }
+    else if (
+      successCount > 0
+    ) {
+      setMessage(
+        `${successCount} resultado(s) correctos y ${errorCount} con error. Puedes reintentar solo los fallidos.`,
+      );
+      setMessageType(
+        "error",
+      );
+    }
+    else {
+      setMessage(
+        `No fue posible procesar ${errorCount} resultado(s). Revisa los errores e intenta nuevamente.`,
+      );
+      setMessageType(
+        "error",
+      );
+    }
   }
 
   async function viewPdf(result) {
@@ -853,9 +1263,15 @@ export default function AdminResultsUploadPage() {
           const patient =
             order?.patients;
 
+          const branch =
+            branchById(
+              order?.branch_id,
+            );
+
           const haystack = [
-            result.study_name_snapshot,
             order?.order_number,
+            branch?.name_es,
+            branch?.result_order_prefix,
             patient?.first_name,
             patient?.last_name,
             patient?.identification_number,
@@ -873,6 +1289,7 @@ export default function AdminResultsUploadPage() {
       results,
       resultSearch,
       statusFilter,
+      branches,
     ]);
 
   const pageCount =
@@ -929,6 +1346,9 @@ export default function AdminResultsUploadPage() {
           filteredResults.length,
         );
 
+  const bulkHasSuccess = bulkRows.some((row) => row.status === "success");
+  const patientLocked = uploading || bulkProcessing || bulkHasSuccess;
+
   return (
     <div className="admin-results-upload-page">
       <section className="admin-page-heading">
@@ -952,9 +1372,10 @@ export default function AdminResultsUploadPage() {
           <button
             type="button"
             className="admin-button admin-button--secondary"
-            onClick={
-              loadResults
-            }
+            onClick={() => {
+              loadResults();
+              loadBranches();
+            }}
             disabled={
               loadingResults
             }
@@ -978,22 +1399,46 @@ export default function AdminResultsUploadPage() {
 
                 <div>
                   <h2>
-                    Nuevo resultado
+                    Subir resultados
                   </h2>
 
                   <p>
-                    PDF privado, maximo 20 MB
+                    Orden interna automatica por sucursal y ano.
                   </p>
                 </div>
               </div>
             </header>
 
-            <form
-              className="admin-result-upload-form"
-              onSubmit={
-                uploadResult
-              }
-            >
+            <div className="admin-result-upload-form">
+              <label>
+                <span>
+                  Sucursal
+                </span>
+
+                <div className="admin-form-control">
+                  <input
+                    type="text"
+                    value={
+                      selectedBranchId
+                        ? branchLabel(selectedBranchId)
+                        : "Sin sucursal asignada"
+                    }
+                    readOnly
+                    aria-label="Sucursal asignada automáticamente"
+                  />
+                </div>
+
+                {selectedBranchId ? (
+                  <small className="admin-result-help">
+                    Sucursal aplicada automáticamente al iniciar sesión.
+                  </small>
+                ) : (
+                  <small className="admin-result-help">
+                    No hay una sucursal activa para esta cuenta. Consulta al administrador.
+                  </small>
+                )}
+              </label>
+
               <label>
                 <span>
                   Paciente
@@ -1025,6 +1470,7 @@ export default function AdminResultsUploadPage() {
                     }}
                     placeholder="Nombre, cedula o telefono..."
                     autoComplete="off"
+                    disabled={patientLocked}
                   />
 
                   {selectedPatient ? (
@@ -1034,6 +1480,7 @@ export default function AdminResultsUploadPage() {
                         clearPatient
                       }
                       aria-label="Quitar paciente"
+                      disabled={patientLocked}
                     >
                       <X size={16} />
                     </button>
@@ -1061,6 +1508,7 @@ export default function AdminResultsUploadPage() {
                               patient,
                             )
                           }
+                          disabled={patientLocked}
                         >
                           <UserRound
                             size={17}
@@ -1111,131 +1559,346 @@ export default function AdminResultsUploadPage() {
                     </span>
                   </div>
                 ) : null}
+
+                {uploadMode === "bulk" ? (
+                  <small className="admin-result-help">
+                    Este paciente se asignará a todos los PDF del lote.
+                  </small>
+                ) : null}
               </label>
-
-              <div className="admin-form-two-columns">
-                <label>
-                  <span>
-                    Estudio
-                  </span>
-
-                  <div className="admin-form-control">
-                    <select
-                      value={
-                        studyId
-                      }
-                      onChange={(
-                        event,
-                      ) =>
-                        setStudyId(
-                          event.target
-                            .value,
-                        )
-                      }
-                    >
-                      <option value="">
-                        Seleccionar...
-                      </option>
-
-                      {studies.map(
-                        (study) => (
-                          <option
-                            key={
-                              study.id
-                            }
-                            value={
-                              study.id
-                            }
-                          >
-                            {
-                              study.name_es
-                            }
-                          </option>
-                        ),
-                      )}
-                    </select>
-                  </div>
-                </label>
-
-                <label>
-                  <span>
-                    Fecha del resultado
-                  </span>
-
-                  <div className="admin-form-control">
-                    <input
-                      type="date"
-                      value={
-                        resultDate
-                      }
-                      onChange={(
-                        event,
-                      ) =>
-                        setResultDate(
-                          event.target
-                            .value,
-                        )
-                      }
-                    />
-                  </div>
-                </label>
-              </div>
 
               <label>
                 <span>
-                  Archivo PDF
+                  Fecha del resultado
                 </span>
 
-                <div className="admin-result-file-control">
-                  <FileText
-                    size={21}
-                  />
-
-                  <div>
-                    <strong>
-                      {pdfFile
-                        ? pdfFile.name
-                        : "Seleccionar PDF"}
-                    </strong>
-
-                    <small>
-                      {pdfFile
-                        ? formatBytes(
-                            pdfFile.size,
-                          )
-                        : "Solo PDF - hasta 20 MB"}
-                    </small>
-                  </div>
-
+                <div className="admin-form-control">
                   <input
-                    id="result-pdf-input"
-                    type="file"
-                    accept="application/pdf,.pdf"
-                    onChange={
-                      handleFileChange
+                    type="date"
+                    value={
+                      resultDate
+                    }
+                    disabled={patientLocked}
+                    onChange={(
+                      event,
+                    ) =>
+                      setResultDate(
+                        event.target
+                          .value,
+                      )
                     }
                   />
                 </div>
               </label>
 
-              <button
-                type="submit"
-                className="admin-button admin-button--primary admin-result-submit"
-                disabled={
-                  uploading
-                }
-              >
-                <Upload
-                  size={18}
-                />
+              <div className="admin-result-upload-mode">
+                <button
+                  type="button"
+                  className={[
+                    "admin-result-mode-button",
+                    uploadMode ===
+                    "single"
+                      ? "is-active"
+                      : "",
+                  ].join(" ")}
+                  onClick={() =>
+                    setUploadMode(
+                      "single",
+                    )
+                  }
+                  disabled={
+                    bulkProcessing ||
+                    uploading ||
+                    bulkHasSuccess
+                  }
+                >
+                  Subir un resultado
+                </button>
 
-                <span>
-                  {uploading
-                    ? "Subiendo..."
-                    : "Subir resultado"}
-                </span>
-              </button>
-            </form>
+                <button
+                  type="button"
+                  className={[
+                    "admin-result-mode-button",
+                    uploadMode ===
+                    "bulk"
+                      ? "is-active"
+                      : "",
+                  ].join(" ")}
+                  onClick={() =>
+                    setUploadMode(
+                      "bulk",
+                    )
+                  }
+                  disabled={
+                    bulkProcessing ||
+                    uploading ||
+                    bulkHasSuccess
+                  }
+                >
+                  Subida masiva
+                </button>
+              </div>
+
+              {uploadMode ===
+              "single" ? (
+                <form
+                  className="admin-result-upload-form admin-result-upload-form--nested"
+                  onSubmit={
+                    uploadResult
+                  }
+                >
+                  <label>
+                    <span>
+                      Archivo PDF
+                    </span>
+
+                    <div className="admin-result-file-control">
+                      <FileText
+                        size={21}
+                      />
+
+                      <div>
+                        <strong>
+                          {pdfFile
+                            ? pdfFile.name
+                            : "Seleccionar PDF"}
+                        </strong>
+
+                        <small>
+                          {pdfFile
+                            ? formatBytes(
+                                pdfFile.size,
+                              )
+                            : "Solo PDF - hasta 20 MB"}
+                        </small>
+                      </div>
+
+                      <input
+                        id="result-pdf-input"
+                        type="file"
+                        accept="application/pdf,.pdf"
+                        onChange={
+                          handleFileChange
+                        }
+                      />
+                    </div>
+                  </label>
+
+                  <button
+                    type="submit"
+                    className="admin-button admin-button--primary admin-result-submit"
+                    disabled={
+                      uploading ||
+                      !selectedBranchId
+                    }
+                  >
+                    <Upload
+                      size={18}
+                    />
+
+                    <span>
+                      {uploading
+                        ? "Subiendo..."
+                        : "Subir resultado"}
+                    </span>
+                  </button>
+                </form>
+              ) : (
+                <form
+                  className="admin-result-bulk-form"
+                  onSubmit={
+                    processBulkResults
+                  }
+                >
+                  <div className="admin-result-bulk-top">
+                    <label>
+                      <span>
+                        Archivos PDF
+                      </span>
+
+                      <div className="admin-result-file-control">
+                        <FileText
+                          size={21}
+                        />
+
+                        <div>
+                          <strong>
+                            {bulkRows.length >
+                            0
+                              ? `${bulkRows.length} PDF seleccionado(s)`
+                              : "Seleccionar varios PDF"}
+                          </strong>
+
+                          <small>
+                            Cada PDF puede pesar hasta 20 MB
+                          </small>
+                        </div>
+
+                        <input
+                          id="result-bulk-pdf-input"
+                          type="file"
+                          accept="application/pdf,.pdf"
+                          multiple
+                          onChange={
+                            handleBulkFiles
+                          }
+                          disabled={
+                            bulkProcessing ||
+                            bulkHasSuccess
+                          }
+                        />
+                      </div>
+                    </label>
+                  </div>
+
+                  {bulkRows.length >
+                  0 ? (
+                    <div className="admin-result-bulk-list">
+                      {bulkRows.map(
+                        (row) => (
+                          <article
+                            className={[
+                              "admin-result-bulk-row",
+                              `is-${row.status}`,
+                            ].join(" ")}
+                            key={
+                              row.id
+                            }
+                          >
+                            <div className="admin-result-bulk-file">
+                              <FileText
+                                size={18}
+                              />
+
+                              <span>
+                                <strong>
+                                  {row.file.name}
+                                </strong>
+
+                                <small>
+                                  {formatBytes(
+                                    row.file.size,
+                                  )}
+                                </small>
+                              </span>
+                            </div>
+
+                            <div className="admin-result-bulk-status">
+                              {row.status ===
+                              "success" ? (
+                                <>
+                                  <CheckCircle2
+                                    size={17}
+                                  />
+                                  <strong>
+                                    {row.orderNumber}
+                                  </strong>
+                                </>
+                              ) : row.status ===
+                                "uploading" ? (
+                                <span>
+                                  Subiendo...
+                                </span>
+                              ) : row.status ===
+                                "error" ? (
+                                <>
+                                  <strong>
+                                    Error
+                                  </strong>
+                                  <small>
+                                    {row.error}
+                                  </small>
+                                </>
+                              ) : selectedPatient ? (
+                                <span>
+                                  Listo
+                                </span>
+                              ) : (
+                                <span>
+                                  Pendiente
+                                </span>
+                              )}
+                            </div>
+
+                            <button
+                              type="button"
+                              className="admin-result-bulk-remove"
+                              onClick={() =>
+                                removeBulkRow(
+                                  row.id,
+                                )
+                              }
+                              disabled={
+                                bulkProcessing ||
+                                row.status ===
+                                  "success"
+                              }
+                              aria-label="Quitar archivo"
+                              title={
+                                row.status ===
+                                "success"
+                                  ? "El resultado ya fue procesado"
+                                  : "Quitar archivo"
+                              }
+                            >
+                              <X
+                                size={16}
+                              />
+                            </button>
+                          </article>
+                        ),
+                      )}
+                    </div>
+                  ) : (
+                    <div className="admin-result-bulk-empty">
+                      Selecciona varios PDF para preparar la carga masiva.
+                    </div>
+                  )}
+
+                  <button
+                    type="submit"
+                    className="admin-button admin-button--primary admin-result-submit"
+                    disabled={
+                      bulkProcessing ||
+                      !selectedBranchId ||
+                      !selectedPatient ||
+                      bulkRows.length ===
+                        0 ||
+                      bulkRows.every(
+                        (row) =>
+                          row.status ===
+                          "success",
+                      )
+                    }
+                  >
+                    <Upload
+                      size={18}
+                    />
+
+                    <span>
+                      {bulkProcessing
+                        ? "Procesando..."
+                        : `Procesar ${bulkRows.filter(
+                            (row) =>
+                              row.status !==
+                              "success",
+                          ).length} resultado(s)`}
+                    </span>
+                  </button>
+
+                  {bulkRows.length > 0 ? (
+                    <button
+                      type="button"
+                      className="admin-button admin-button--secondary"
+                      onClick={startNewBulkBatch}
+                      disabled={bulkProcessing}
+                    >
+                      Nuevo lote
+                    </button>
+                  ) : null}
+                </form>
+              )}
+            </div>
           </article>
         </section>
       ) : (
@@ -1245,7 +1908,7 @@ export default function AdminResultsUploadPage() {
           />
 
           <span>
-            La carga de PDF esta disponible para Administrador y Laboratorista. Secretaria puede consultar y liberar resultados.
+            Tu usuario no tiene permiso para cargar resultados.
           </span>
         </div>
       )}
@@ -1294,7 +1957,7 @@ export default function AdminResultsUploadPage() {
                       .value,
                   )
                 }
-                placeholder="Paciente, cedula, orden o estudio..."
+                placeholder="Paciente, cedula u orden..."
               />
             </div>
 
@@ -1342,7 +2005,10 @@ export default function AdminResultsUploadPage() {
                   Orden
                 </th>
                 <th>
-                  Estudio
+                  Sucursal
+                </th>
+                <th>
+                  Archivo
                 </th>
                 <th>
                   Fecha
@@ -1365,7 +2031,7 @@ export default function AdminResultsUploadPage() {
                 0 ? (
                 <tr>
                   <td
-                    colSpan="7"
+                    colSpan="8"
                     className="admin-result-empty"
                   >
                     No hay resultados para mostrar.
@@ -1431,19 +2097,25 @@ export default function AdminResultsUploadPage() {
                       </td>
 
                       <td
-                        data-label="Estudio"
+                        data-label="Sucursal"
+                      >
+                        <strong>
+                          {branchLabel(
+                            order?.branch_id,
+                          )}
+                        </strong>
+                      </td>
+
+                      <td
+                        data-label="Archivo"
                       >
                         <strong>
                           {
-                            result.study_name_snapshot
+                            result.original_file_name
                           }
                         </strong>
 
                         <small>
-                          {
-                            result.original_file_name
-                          }
-                          {" - "}
                           {formatBytes(
                             result.file_size_bytes,
                           )}

@@ -10,45 +10,17 @@ import {
 } from "lucide-react";
 
 import { useLanguage } from "../../context/LanguageContext";
+import useSiteHighlights from "../../hooks/useSiteHighlights";
 import "../../styles/highlights-popup.css";
 
 const ROTATION_MS = 4000;
 
-const flyers = [
-  {
-    id: "services",
-    image:
-      "/destacados/destacado-01-servicios.png",
-    es: "Servicios de laboratorio",
-    en: "Laboratory services",
-  },
-  {
-    id: "dengue",
-    image:
-      "/destacados/destacado-02-dengue.png",
-    es: "Prueba de dengue",
-    en: "Dengue testing",
-  },
-  {
-    id: "payments",
-    image:
-      "/destacados/destacado-03-pagos.png",
-    es: "Formas de pago",
-    en: "Payment options",
-  },
-  {
-    id: "occupational",
-    image:
-      "/destacados/destacado-04-ocupacional.png",
-    es: "Salud ocupacional",
-    en: "Occupational health",
-  },
-];
 
 export default function HighlightsPopup({
   open,
   onClose,
 }) {
+  const flyers = useSiteHighlights();
   const { language } =
     useLanguage();
 
@@ -117,7 +89,7 @@ export default function HighlightsPopup({
   ]);
 
   useEffect(() => {
-    if (!open) {
+    if (!open || !flyers.length) {
       return undefined;
     }
 
@@ -138,10 +110,11 @@ export default function HighlightsPopup({
         timer,
       );
     };
-  }, [open]);
+  }, [open, flyers.length]);
 
   if (
     !open ||
+    !flyers.length ||
     typeof document ===
       "undefined"
   ) {
@@ -149,7 +122,7 @@ export default function HighlightsPopup({
   }
 
   const flyer =
-    flyers[index];
+    flyers[index % flyers.length];
 
   const title =
     language === "en"

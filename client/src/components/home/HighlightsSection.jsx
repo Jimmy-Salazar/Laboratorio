@@ -13,39 +13,10 @@ import {
 
 import SectionHeader from "../common/SectionHeader";
 import { useLanguage } from "../../context/LanguageContext";
+import useSiteHighlights from "../../hooks/useSiteHighlights";
 
 const ROTATION_MS = 4000;
 
-const flyers = [
-  {
-    id: "services",
-    image:
-      "/destacados/destacado-01-servicios.png",
-    es: "Servicios de laboratorio",
-    en: "Laboratory services",
-  },
-  {
-    id: "dengue",
-    image:
-      "/destacados/destacado-02-dengue.png",
-    es: "Prueba de dengue",
-    en: "Dengue testing",
-  },
-  {
-    id: "payments",
-    image:
-      "/destacados/destacado-03-pagos.png",
-    es: "Formas de pago",
-    en: "Payment options",
-  },
-  {
-    id: "occupational",
-    image:
-      "/destacados/destacado-04-ocupacional.png",
-    es: "Salud ocupacional",
-    en: "Occupational health",
-  },
-];
 
 function getVisibleCount() {
   if (
@@ -70,6 +41,7 @@ function getVisibleCount() {
 }
 
 export default function HighlightsSection() {
+  const flyers = useSiteHighlights();
   const { language } =
     useLanguage();
 
@@ -140,6 +112,7 @@ export default function HighlightsSection() {
 
   useEffect(() => {
     function openFloatingCarousel() {
+      if (!flyers.length) return;
       setFloatingIndex(
         startIndex,
       );
@@ -160,13 +133,14 @@ export default function HighlightsSection() {
         openFloatingCarousel,
       );
     };
-  }, [startIndex]);
+  }, [startIndex, flyers.length]);
 
   useEffect(() => {
     if (
       isPaused ||
       selectedFlyer ||
-      floatingOpen
+      floatingOpen ||
+      !flyers.length
     ) {
       return undefined;
     }
@@ -192,10 +166,11 @@ export default function HighlightsSection() {
     isPaused,
     selectedFlyer,
     floatingOpen,
+    flyers.length,
   ]);
 
   useEffect(() => {
-    if (!floatingOpen) {
+    if (!floatingOpen || !flyers.length) {
       return undefined;
     }
 
@@ -216,7 +191,7 @@ export default function HighlightsSection() {
         timer,
       );
     };
-  }, [floatingOpen]);
+  }, [floatingOpen, flyers.length]);
 
   const overlayOpen =
     Boolean(
@@ -287,6 +262,7 @@ export default function HighlightsSection() {
     }, [
       startIndex,
       visibleCount,
+      flyers,
     ]);
 
   const floatingFlyer =
@@ -297,8 +273,8 @@ export default function HighlightsSection() {
 
   function flyerTitle(flyer) {
     return language === "en"
-      ? flyer.en
-      : flyer.es;
+      ? flyer?.en
+      : flyer?.es;
   }
 
   function moveCarousel(
@@ -328,6 +304,8 @@ export default function HighlightsSection() {
         flyers.length,
     );
   }
+
+  if (!flyers.length) return null;
 
   return (
     <section

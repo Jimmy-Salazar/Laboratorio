@@ -10,19 +10,11 @@ const corsHeaders = {
     "POST, OPTIONS",
 };
 
-const allowedRoles =
-  new Set([
-    "admin",
-    "secretary",
-    "laboratorist",
-  ]);
-
 
 function json(
   body: Record<string, unknown>,
   status = 200,
 ) {
-
   return new Response(
     JSON.stringify(body),
     {
@@ -39,34 +31,29 @@ function json(
 }
 
 
-function validEmail(
+function validUuid(
   value: string,
 ) {
-
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
     .test(value);
-
 }
 
 
 function escapeHtml(
   value: string,
 ) {
-
   return value
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
-
 }
 
 
 function randomCharacter(
   characters: string,
 ) {
-
   const values =
     new Uint32Array(1);
 
@@ -78,7 +65,6 @@ function randomCharacter(
     values[0] %
     characters.length
   ];
-
 }
 
 
@@ -103,26 +89,33 @@ function generateTemporaryPassword() {
     symbols;
 
   const password = [
-    randomCharacter(upper),
-    randomCharacter(lower),
-    randomCharacter(numbers),
-    randomCharacter(symbols),
+    randomCharacter(
+      upper,
+    ),
+    randomCharacter(
+      lower,
+    ),
+    randomCharacter(
+      numbers,
+    ),
+    randomCharacter(
+      symbols,
+    ),
   ];
 
+
   while (
-    password.length < 14
+    password.length <
+    14
   ) {
-
     password.push(
-      randomCharacter(all),
+      randomCharacter(
+        all,
+      ),
     );
-
   }
 
 
-  /*
-   * Secure shuffle.
-   */
   for (
     let index =
       password.length - 1;
@@ -148,20 +141,19 @@ function generateTemporaryPassword() {
       password[target],
       password[index],
     ];
-
   }
 
-  return password.join("");
 
+  return password.join("");
 }
 
 
 Deno.serve(async (req) => {
 
   if (
-    req.method === "OPTIONS"
+    req.method ===
+    "OPTIONS"
   ) {
-
     return new Response(
       "ok",
       {
@@ -169,14 +161,13 @@ Deno.serve(async (req) => {
           corsHeaders,
       },
     );
-
   }
 
 
   if (
-    req.method !== "POST"
+    req.method !==
+    "POST"
   ) {
-
     return json(
       {
         ok: false,
@@ -185,7 +176,6 @@ Deno.serve(async (req) => {
       },
       405,
     );
-
   }
 
 
@@ -218,9 +208,10 @@ Deno.serve(async (req) => {
   if (
     !supabaseUrl ||
     !anonKey ||
-    !serviceRoleKey
+    !serviceRoleKey ||
+    !gmailUser ||
+    !gmailPassword
   ) {
-
     return json(
       {
         ok: false,
@@ -229,24 +220,6 @@ Deno.serve(async (req) => {
       },
       500,
     );
-
-  }
-
-
-  if (
-    !gmailUser ||
-    !gmailPassword
-  ) {
-
-    return json(
-      {
-        ok: false,
-        message:
-          "La configuracion Gmail del servidor esta incompleta.",
-      },
-      500,
-    );
-
   }
 
 
@@ -255,9 +228,7 @@ Deno.serve(async (req) => {
       "Authorization",
     );
 
-
   if (!authorization) {
-
     return json(
       {
         ok: false,
@@ -266,7 +237,6 @@ Deno.serve(async (req) => {
       },
       401,
     );
-
   }
 
 
@@ -301,7 +271,6 @@ Deno.serve(async (req) => {
     callerError ||
     !caller
   ) {
-
     return json(
       {
         ok: false,
@@ -310,7 +279,6 @@ Deno.serve(async (req) => {
       },
       401,
     );
-
   }
 
 
@@ -359,7 +327,6 @@ Deno.serve(async (req) => {
       callerProfile.role,
     )
   ) {
-
     return json(
       {
         ok: false,
@@ -368,27 +335,19 @@ Deno.serve(async (req) => {
       },
       403,
     );
-
   }
 
 
   let body: {
-    fullName?: string;
-    identificationNumber?: string;
-    email?: string;
-    role?: string;
-    branchId?: string | null;
+    userId?: string;
   };
 
 
   try {
-
     body =
       await req.json();
-
   }
   catch {
-
     return json(
       {
         ok: false,
@@ -397,301 +356,224 @@ Deno.serve(async (req) => {
       },
       400,
     );
-
   }
 
 
-  const fullName =
+  const targetUserId =
     String(
-      body.fullName ?? "",
+      body.userId ?? "",
     ).trim();
 
 
-  const identificationNumber =
-    String(
-      body.identificationNumber ??
-        "",
-    ).replace(
-      /\D/g,
-      "",
+  if (
+    !validUuid(
+      targetUserId,
+    )
+  ) {
+    return json(
+      {
+        ok: false,
+        message:
+          "Usuario invalido.",
+      },
+      400,
     );
+  }
+
+
+  const {
+    data:
+      profile,
+    error:
+      profileError,
+  } =
+    await adminClient
+      .from(
+        "staff_profiles",
+      )
+      .select(
+        "user_id, full_name, identification_number, email, role, active",
+      )
+      .eq(
+        "user_id",
+        targetUserId,
+      )
+      .maybeSingle();
+
+
+  if (
+    profileError ||
+    !profile
+  ) {
+    return json(
+      {
+        ok: false,
+        message:
+          "Usuario no encontrado.",
+      },
+      404,
+    );
+  }
+
+
+  if (
+    profile.role ===
+    "master"
+  ) {
+    return json(
+      {
+        ok: false,
+        message:
+          "No se puede resetear el Master desde esta pantalla.",
+      },
+      403,
+    );
+  }
+
+
+  if (
+    !profile.active
+  ) {
+    return json(
+      {
+        ok: false,
+        message:
+          "El usuario esta inactivo. Activalo antes de resetear la contrasena.",
+      },
+      400,
+    );
+  }
 
 
   const realEmail =
     String(
-      body.email ?? "",
+      profile.email ?? "",
     )
       .trim()
       .toLowerCase();
 
 
-  const role =
-    String(
-      body.role ?? "",
-    ).trim();
-
-
-  const requestedBranchId =
-    String(
-      body.branchId ?? "",
-    ).trim();
-
-
   if (
-    fullName.length < 2 ||
-    !/^\d{8,15}$/.test(
-      identificationNumber,
-    ) ||
-    !validEmail(
-      realEmail,
-    ) ||
-    !allowedRoles.has(
-      role,
-    )
+    !realEmail
   ) {
-
     return json(
       {
         ok: false,
         message:
-          "Nombre, cedula, correo o rol no son validos.",
+          "El usuario no tiene correo. Editalo y agrega un correo antes de resetear la contrasena.",
       },
       400,
     );
-
   }
 
 
   /*
-   * Admin siempre = Todas las sucursales.
+   * Comprobamos Gmail ANTES de cambiar
+   * la contraseña del usuario.
    */
-  let branchId:
-    string | null =
-      null;
+  const transporter =
+    nodemailer.createTransport({
+      host:
+        "smtp.gmail.com",
+
+      port:
+        465,
+
+      secure:
+        true,
+
+      auth: {
+        user:
+          gmailUser,
+
+        pass:
+          gmailPassword,
+      },
+
+      connectionTimeout:
+        15000,
+
+      greetingTimeout:
+        15000,
+
+      socketTimeout:
+        20000,
+    });
 
 
-  if (
-    role !== "admin" &&
-    requestedBranchId
-  ) {
-
-    const {
-      data:
-        branch,
-      error:
-        branchError,
-    } =
-      await adminClient
-        .from(
-          "branches",
-        )
-        .select(
-          "id",
-        )
-        .eq(
-          "id",
-          requestedBranchId,
-        )
-        .eq(
-          "active",
-          true,
-        )
-        .maybeSingle();
-
-
-    if (
-      branchError ||
-      !branch
-    ) {
-
-      return json(
-        {
-          ok: false,
-          message:
-            "La sucursal seleccionada no existe o esta inactiva.",
-        },
-        400,
-      );
-
-    }
-
-
-    branchId =
-      branch.id;
-
+  try {
+    await transporter.verify();
   }
+  catch (verifyError) {
 
-
-  /*
-   * Evitar cedula duplicada.
-   */
-  const {
-    data:
-      existingIdentification,
-  } =
-    await adminClient
-      .from(
-        "staff_profiles",
-      )
-      .select(
-        "user_id",
-      )
-      .eq(
-        "identification_number",
-        identificationNumber,
-      )
-      .maybeSingle();
-
-
-  if (
-    existingIdentification
-  ) {
+    console.error(
+      "Gmail verification error:",
+      verifyError,
+    );
 
     return json(
       {
         ok: false,
         message:
-          "Ya existe un usuario con esa cedula.",
+          "No se pudo conectar con el servicio de correo. La contrasena NO fue modificada.",
       },
-      409,
+      502,
     );
-
   }
-
-
-  /*
-   * Evitar correo duplicado.
-   */
-  const {
-    data:
-      existingEmail,
-  } =
-    await adminClient
-      .from(
-        "staff_profiles",
-      )
-      .select(
-        "user_id",
-      )
-      .eq(
-        "email",
-        realEmail,
-      )
-      .maybeSingle();
-
-
-  if (
-    existingEmail
-  ) {
-
-    return json(
-      {
-        ok: false,
-        message:
-          "Ya existe un usuario con ese correo.",
-      },
-      409,
-    );
-
-  }
-
-
-  /*
-   * El login continua siendo por cedula.
-   * El correo interno de Auth sigue siendo sintetico.
-   */
-  const authEmail =
-    `${identificationNumber}@admin.drchasi.local`;
 
 
   const temporaryPassword =
     generateTemporaryPassword();
 
 
+  /*
+   * Cambiar contraseña en Auth.
+   */
   const {
-    data:
-      created,
     error:
-      createError,
+      passwordError,
   } =
     await adminClient
       .auth
       .admin
-      .createUser({
-        email:
-          authEmail,
-
-        password:
-          temporaryPassword,
-
-        email_confirm:
-          true,
-
-        user_metadata: {
-          identification_number:
-            identificationNumber,
-
-          role,
-
-          branch_id:
-            branchId,
+      .updateUserById(
+        targetUserId,
+        {
+          password:
+            temporaryPassword,
         },
-      });
+      );
 
 
-  if (
-    createError ||
-    !created.user
-  ) {
+  if (passwordError) {
 
     console.error(
-      createError,
+      passwordError,
     );
 
     return json(
       {
         ok: false,
         message:
-          "No fue posible crear la cuenta de acceso.",
+          "No fue posible resetear la contrasena.",
       },
-      400,
+      500,
     );
-
   }
 
 
   /*
-   * Perfil interno.
+   * Activar nuevamente el cambio obligatorio.
    */
   const {
     error:
-      insertError,
+      profileUpdateError,
   } =
     await adminClient
       .from(
         "staff_profiles",
       )
-      .insert({
-        user_id:
-          created.user.id,
-
-        full_name:
-          fullName,
-
-        role,
-
-        active:
-          true,
-
-        identification_number:
-          identificationNumber,
-
-        branch_id:
-          branchId,
-
-        email:
-          realEmail,
-
+      .update({
         must_change_password:
           true,
 
@@ -700,145 +582,121 @@ Deno.serve(async (req) => {
 
         temporary_password_sent_at:
           null,
-      });
+      })
+      .eq(
+        "user_id",
+        targetUserId,
+      );
 
 
-  if (insertError) {
+  if (profileUpdateError) {
 
     console.error(
-      insertError,
+      profileUpdateError,
     );
-
-    await adminClient
-      .auth
-      .admin
-      .deleteUser(
-        created.user.id,
-      );
 
     return json(
       {
         ok: false,
         message:
-          "No fue posible crear el perfil del usuario.",
+          "La contrasena fue reseteada, pero no fue posible activar el cambio obligatorio.",
       },
       500,
     );
-
   }
 
 
-  /*
-   * Envio de credenciales.
-   */
-  try {
+  const safeName =
+    escapeHtml(
+      profile.full_name ??
+      "Usuario",
+    );
 
-    const transporter =
-      nodemailer.createTransport({
-        host:
-          "smtp.gmail.com",
+  const safeIdentification =
+    escapeHtml(
+      profile.identification_number ??
+      "",
+    );
 
-        port:
-          465,
-
-        secure:
-          true,
-
-        auth: {
-          user:
-            gmailUser,
-
-          pass:
-            gmailPassword,
-        },
-
-        connectionTimeout:
-          15000,
-
-        greetingTimeout:
-          15000,
-
-        socketTimeout:
-          20000,
-      });
+  const safePassword =
+    escapeHtml(
+      temporaryPassword,
+    );
 
 
-    const safeName =
-      escapeHtml(
-        fullName,
-      );
-
-    const safeIdentification =
-      escapeHtml(
-        identificationNumber,
-      );
-
-    const safePassword =
-      escapeHtml(
-        temporaryPassword,
-      );
-
-
-    const textBody =
-      [
-        `Hola ${fullName},`,
-        "",
-        "Se ha creado tu acceso al sistema del Laboratorio Clinico Dr. Milton Chasi.",
-        "",
-        `Usuario: ${identificationNumber}`,
-        `Contrasena temporal: ${temporaryPassword}`,
-        "",
-        "Al ingresar por primera vez deberas cambiar esta contrasena antes de utilizar el sistema.",
-        "",
-        "Por seguridad, no compartas estas credenciales.",
-        "",
-        "Laboratorio Clinico Dr. Milton Chasi",
-      ].join(
-        "\n",
-      );
+  const textBody =
+    [
+      `Hola ${profile.full_name ?? "usuario"},`,
+      "",
+      "Un administrador ha reseteado tu contrasena de acceso al sistema del Laboratorio Clinico Dr. Milton Chasi.",
+      "",
+      `Usuario: ${profile.identification_number}`,
+      `Nueva contrasena temporal: ${temporaryPassword}`,
+      "",
+      "La contrasena anterior ya no debe utilizarse.",
+      "",
+      "Al ingresar deberas crear una nueva contrasena antes de continuar.",
+      "",
+      "Por seguridad, no compartas estas credenciales.",
+      "",
+      "Laboratorio Clinico Dr. Milton Chasi",
+    ].join(
+      "\n",
+    );
 
 
-    const htmlBody =
-      `<!doctype html>
+  const htmlBody =
+    `<!doctype html>
 <html>
 <body style="margin:0;padding:24px;background:#f4f8fc;font-family:Arial,sans-serif;color:#24415f;">
   <div style="max-width:600px;margin:0 auto;background:#ffffff;border:1px solid #dce7f1;border-radius:14px;padding:28px;">
-    <h2 style="margin:0 0 20px;color:#0a4b9f;">Laboratorio Cl&iacute;nico Dr. Milton Chasi</h2>
 
-    <p>Hola <strong>${safeName}</strong>,</p>
+    <h2 style="margin:0 0 20px;color:#0a4b9f;">
+      Laboratorio Cl&iacute;nico Dr. Milton Chasi
+    </h2>
 
-    <p>Se ha creado tu acceso al sistema administrativo del laboratorio.</p>
+    <p>
+      Hola <strong>${safeName}</strong>,
+    </p>
+
+    <p>
+      Un administrador ha reseteado tu contrase&ntilde;a de acceso.
+    </p>
 
     <div style="margin:22px 0;padding:18px;background:#f4f8fc;border-radius:10px;">
+
       <p style="margin:0 0 10px;">
         <strong>Usuario:</strong>
         ${safeIdentification}
       </p>
 
       <p style="margin:0;">
-        <strong>Contrase&ntilde;a temporal:</strong>
+        <strong>Nueva contrase&ntilde;a temporal:</strong>
         <span style="font-family:monospace;font-size:16px;">
           ${safePassword}
         </span>
       </p>
+
     </div>
 
     <p>
-      Al ingresar por primera vez deber&aacute;s cambiar
-      esta contrase&ntilde;a antes de utilizar el sistema.
+      Al ingresar deber&aacute;s crear una nueva contrase&ntilde;a antes de continuar.
     </p>
 
     <p>
-      Por seguridad, no compartas estas credenciales.
+      La contrase&ntilde;a anterior ya no debe utilizarse.
     </p>
 
     <p style="margin-top:28px;">
       Laboratorio Cl&iacute;nico Dr. Milton Chasi
     </p>
+
   </div>
 </body>
 </html>`;
 
+
+  try {
 
     await transporter.sendMail({
       from:
@@ -848,7 +706,7 @@ Deno.serve(async (req) => {
         realEmail,
 
       subject:
-        "Credenciales de acceso - Laboratorio Dr. Milton Chasi",
+        "Nueva contrasena temporal - Laboratorio Dr. Milton Chasi",
 
       text:
         textBody,
@@ -861,84 +719,42 @@ Deno.serve(async (req) => {
   catch (emailError) {
 
     console.error(
-      "Credential email error:",
+      "Reset password email error:",
       emailError,
     );
-
-
-    /*
-     * No dejamos una cuenta activa si
-     * las credenciales no pudieron entregarse.
-     */
-    await adminClient
-      .from(
-        "staff_profiles",
-      )
-      .delete()
-      .eq(
-        "user_id",
-        created.user.id,
-      );
-
-
-    await adminClient
-      .auth
-      .admin
-      .deleteUser(
-        created.user.id,
-      );
-
 
     return json(
       {
         ok: false,
+        passwordChanged:
+          true,
+
         message:
-          "No fue posible enviar el correo de credenciales. El usuario no fue creado.",
+          "La contrasena fue reseteada, pero el correo no pudo enviarse. Vuelve a usar Resetear contrasena para generar y enviar una nueva.",
       },
       502,
     );
-
   }
 
 
-  /*
-   * Registrar fecha de envio.
-   */
   const sentAt =
     new Date().toISOString();
 
 
-  const {
-    error:
-      sentAtError,
-  } =
-    await adminClient
-      .from(
-        "staff_profiles",
-      )
-      .update({
-        temporary_password_sent_at:
-          sentAt,
-      })
-      .eq(
-        "user_id",
-        created.user.id,
-      );
-
-
-  if (sentAtError) {
-
-    console.error(
-      "Could not save temporary password sent timestamp:",
-      sentAtError,
+  await adminClient
+    .from(
+      "staff_profiles",
+    )
+    .update({
+      temporary_password_sent_at:
+        sentAt,
+    })
+    .eq(
+      "user_id",
+      targetUserId,
     );
 
-  }
 
-
-  /*
-   * Registro de actividad.
-   */
   const {
     error:
       auditError,
@@ -951,31 +767,34 @@ Deno.serve(async (req) => {
             caller.id,
 
           p_action:
-            "create",
+            "password_reset",
 
           p_entity_type:
             "staff_profiles",
 
           p_entity_id:
-            created.user.id,
+            targetUserId,
 
           p_description:
-            "Creo usuario: " +
-            fullName,
+            "Reseteo la contrasena de: " +
+            (
+              profile.full_name ??
+              targetUserId
+            ),
 
-          p_changed_fields:
-            [],
+          p_changed_fields: [
+            "password",
+            "must_change_password",
+          ],
         },
       );
 
 
   if (auditError) {
-
     console.error(
       "Audit log error:",
       auditError,
     );
-
   }
 
 
@@ -986,27 +805,8 @@ Deno.serve(async (req) => {
     emailSent:
       true,
 
-    user: {
-      userId:
-        created.user.id,
-
-      fullName,
-
-      identificationNumber,
-
-      email:
-        realEmail,
-
-      role,
-
-      branchId,
-
-      active:
-        true,
-
-      mustChangePassword:
-        true,
-    },
+    message:
+      "Nueva contrasena temporal enviada correctamente.",
   });
 
 });

@@ -167,13 +167,17 @@ const contactDefinitions = [
   },
   {
     key: "whatsapp",
-    label: "WhatsApp",
+    label: "WhatsApp para cotizaciones",
     valueField: "whatsapp",
     enabledField: "whatsapp_enabled",
     icon: MessageCircle,
     placeholder:
       "+593 99 ...",
+    helpText:
+      "Este numero tambien se utiliza para el boton Cotizar del HOME.",
     type: "tel",
+    description:
+      "Este numero se usa en el boton COTIZAR del HOME.",
   },
   {
     key: "email",
@@ -528,7 +532,7 @@ export default function AdminContactSettingsPage() {
                 </h2>
 
                 <p>
-                  Datos visibles en el footer publico.
+                  Datos publicos de contacto. El WhatsApp indicado aqui tambien controla el boton COTIZAR del HOME.
                 </p>
               </div>
             </div>
@@ -562,7 +566,8 @@ export default function AdminContactSettingsPage() {
                         </strong>
 
                         <small>
-                          Mostrar en el pie de pagina
+                          {contact.description ??
+                            "Mostrar en el pie de pagina"}
                         </small>
                       </div>
 
